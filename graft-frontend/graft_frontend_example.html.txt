@@ -1,0 +1,1378 @@
+<!-- Design System -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GRAFT | Main Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#00e479",
+                        "surface-dim": "#131313",
+                        "on-error": "#690005",
+                        "surface-container": "#201f1f",
+                        "outline-variant": "#3b4b3d",
+                        "on-primary": "#003919",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#94f0ab",
+                        "on-background": "#e5e2e1",
+                        "primary-container": "#00ff88",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffe08d",
+                        "surface-container-low": "#1c1b1b",
+                        "tertiary": "#fffaf7",
+                        "inverse-primary": "#006d37",
+                        "on-tertiary-fixed": "#241a00",
+                        "secondary-fixed": "#9af7b0",
+                        "on-secondary-fixed-variant": "#005228",
+                        "surface-container-lowest": "#0e0e0e",
+                        "background": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "on-primary-fixed": "#00210c",
+                        "on-tertiary": "#3d2f00",
+                        "on-primary-container": "#007139",
+                        "surface-bright": "#3a3939",
+                        "on-surface-variant": "#b9cbb9",
+                        "secondary-container": "#027038",
+                        "outline": "#849585",
+                        "tertiary-fixed-dim": "#e5c364",
+                        "primary-fixed": "#60ff99",
+                        "tertiary-container": "#ffdb79",
+                        "secondary": "#7eda96",
+                        "secondary-fixed-dim": "#7eda96",
+                        "surface-variant": "#353534",
+                        "on-tertiary-container": "#795f01",
+                        "primary": "#f1ffef",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary-fixed-variant": "#584400",
+                        "surface": "#131313",
+                        "surface-tint": "#00e479",
+                        "on-primary-fixed-variant": "#005228",
+                        "inverse-surface": "#e5e2e1",
+                        "on-secondary-fixed": "#00210c",
+                        "surface-container-highest": "#353534",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary": "#003919"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    },
+                    borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+            font-size: 1.25rem;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #1c1b1b; }
+        ::-webkit-scrollbar-thumb { background: #353534; }
+        ::-webkit-scrollbar-thumb:hover { background: #849585; }
+        .node-connector {
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            background: #2a2a2a;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-6 h-14 bg-[#131313] border-b border-[#2a2a2a] z-50">
+<div class="flex items-center gap-4">
+<span class="font-mono text-xl tracking-tighter text-[#00FF88]">GRAFT</span>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<nav class="flex gap-6 text-xs font-mono uppercase tracking-widest">
+<a class="text-[#00FF88] font-bold" href="#">Repositories</a>
+<a class="text-zinc-400 hover:text-[#00FF88] transition-colors duration-150" href="#">Traces</a>
+<a class="text-zinc-400 hover:text-[#00FF88] transition-colors duration-150" href="#">Deployments</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-1.5 border border-outline-variant text-on-surface-variant text-xs font-mono uppercase tracking-wider hover:bg-[#2a2a2a] hover:text-[#00FF88] transition-all duration-200 active:opacity-80">
+                New Repo
+            </button>
+<div class="w-8 h-8 bg-surface-container-high border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-xs">person</span>
+</div>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- Left Panel: Feature List (35%) -->
+<section class="w-[35%] flex flex-col border-r border-[#2a2a2a] bg-surface-container-lowest">
+<div class="p-6 border-b border-[#2a2a2a]">
+<div class="flex items-center justify-between mb-1">
+<h1 class="font-mono font-bold text-lg text-on-surface tracking-tight">fastapi/fastapi</h1>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-container">open_in_new</span>
+</div>
+<p class="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">42 files · Python, TypeScript, Shell</p>
+</div>
+<div class="flex-1 overflow-y-auto">
+<!-- Active Feature Card -->
+<div class="group relative p-5 bg-surface-container-low border-l-2 border-[#00FF88] transition-all duration-200">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-primary-container mb-1">Authentication Flow</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">OAuth2 with Password flow and JWT tokens implementation for secure access.</p>
+</div>
+<button class="flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Feature Card -->
+<div class="group relative p-5 border-l-2 border-transparent hover:bg-surface-container-high transition-all duration-200 cursor-pointer">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-on-surface mb-1">Background Tasks</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">Asynchronous execution of long-running processes after returning responses.</p>
+</div>
+<button class="hidden group-hover:flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Feature Card -->
+<div class="group relative p-5 border-l-2 border-transparent hover:bg-surface-container-high transition-all duration-200 cursor-pointer">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-on-surface mb-1">Dependency Injection</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">Hierarchical dependency system for managing database sessions and security.</p>
+</div>
+<button class="hidden group-hover:flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Feature Card -->
+<div class="group relative p-5 border-l-2 border-transparent hover:bg-surface-container-high transition-all duration-200 cursor-pointer">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-on-surface mb-1">Pydantic Validation</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">Automated data validation and serialization using Pydantic models.</p>
+</div>
+<button class="hidden group-hover:flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Trace View (65%) -->
+<section class="flex-1 flex flex-col bg-surface overflow-hidden relative">
+<div class="flex-1 overflow-y-auto p-8 pb-32">
+<div class="max-w-3xl">
+<h2 class="font-headline text-3xl font-bold text-on-surface mb-4 tracking-tight">Authentication Flow <span class="text-primary-container">Trace</span></h2>
+<p class="text-on-surface-variant text-base leading-relaxed mb-12">
+                        This execution path handles the POST request to <code class="bg-surface-container-high px-1 text-primary-container">/token</code>. It extracts the username and password from the form data, validates the credentials against the hashed database records, and generates a scoped JWT token for subsequent requests.
+                    </p>
+<!-- Call Chain Visualization -->
+<div class="mb-16">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline mb-8">Call Chain Tree</h4>
+<div class="space-y-12">
+<!-- Root Node -->
+<div class="relative pl-12">
+<div class="node-connector"></div>
+<div class="absolute left-0 top-0 w-10 h-10 border-2 border-primary-container bg-surface flex items-center justify-center z-10">
+<span class="text-[10px] font-mono font-bold text-primary-container">PY</span>
+</div>
+<div>
+<div class="flex items-center gap-2 font-mono text-sm mb-1">
+<span class="text-on-surface-variant">fastapi/security/oauth2.py</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span class="font-bold text-on-surface">OAuth2PasswordBearer</span>
+</div>
+<p class="text-xs text-on-surface-variant">Entry point: Extracts credentials from request headers.</p>
+</div>
+</div>
+<!-- Child Node 1 -->
+<div class="relative pl-12">
+<div class="node-connector"></div>
+<div class="absolute left-0 top-0 w-10 h-10 border border-outline-variant bg-surface flex items-center justify-center z-10">
+<span class="text-[10px] font-mono font-bold text-primary-container">PY</span>
+</div>
+<div>
+<div class="flex items-center gap-2 font-mono text-sm mb-1">
+<span class="text-on-surface-variant">app/auth/utils.py</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span class="font-bold text-on-surface">verify_password</span>
+</div>
+<p class="text-xs text-on-surface-variant">Cryptographic check: compares bcrypt hash of input vs database.</p>
+</div>
+</div>
+<!-- Child Node 2 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 border border-outline-variant bg-surface flex items-center justify-center z-10">
+<span class="text-[10px] font-mono font-bold text-primary-container">PY</span>
+</div>
+<div>
+<div class="flex items-center gap-2 font-mono text-sm mb-1">
+<span class="text-on-surface-variant">app/auth/jwt.py</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span class="font-bold text-on-surface">create_access_token</span>
+</div>
+<p class="text-xs text-on-surface-variant">Output generation: Signs payload with SECRET_KEY.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Details Grid -->
+<div class="grid grid-cols-2 gap-8 mb-12">
+<!-- Files Involved -->
+<div class="space-y-4">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline">Files Involved</h4>
+<div class="bg-surface-container-lowest p-4 border border-outline-variant/20 space-y-3">
+<div class="flex items-center justify-between text-[11px] font-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">description</span>
+<span class="text-on-surface">security/oauth2.py</span>
+</div>
+<span class="text-outline">L142-180</span>
+</div>
+<div class="flex items-center justify-between text-[11px] font-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">description</span>
+<span class="text-on-surface">auth/utils.py</span>
+</div>
+<span class="text-outline">L24-42</span>
+</div>
+<div class="flex items-center justify-between text-[11px] font-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">description</span>
+<span class="text-on-surface">models/user.py</span>
+</div>
+<span class="text-outline">L89-112</span>
+</div>
+</div>
+</div>
+<!-- Dependencies -->
+<div class="space-y-4">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline">Dependencies</h4>
+<div class="relative bg-surface-container-low p-4 border border-outline-variant/20">
+<code class="text-[11px] font-mono text-on-surface leading-tight block">
+                                    pip install python-jose[cryptography]<br/>
+                                    pip install passlib[bcrypt]
+                                </code>
+<button class="absolute top-2 right-2 text-outline hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined text-base">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Env Vars -->
+<div class="space-y-4">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline">Required Environment Variables</h4>
+<div class="w-full border border-outline-variant/20 bg-surface-container-lowest">
+<table class="w-full text-left font-mono text-[11px]">
+<thead>
+<tr class="border-b border-outline-variant/20 text-outline">
+<th class="px-4 py-2 font-medium">VARIABLE_NAME</th>
+<th class="px-4 py-2 font-medium">DEFAULT_VALUE</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr>
+<td class="px-4 py-3 text-primary-container">SECRET_KEY</td>
+<td class="px-4 py-3 text-on-surface-variant italic">CHANGE_ME</td>
+</tr>
+<tr>
+<td class="px-4 py-3 text-primary-container">ALGORITHM</td>
+<td class="px-4 py-3 text-on-surface-variant">HS256</td>
+</tr>
+<tr>
+<td class="px-4 py-3 text-primary-container">ACCESS_TOKEN_EXPIRE_MINUTES</td>
+<td class="px-4 py-3 text-on-surface-variant">30</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Bottom Action -->
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent pointer-events-none">
+<button class="pointer-events-auto w-full h-14 bg-primary-container text-on-primary-container font-mono font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-primary-fixed-dim transition-all duration-200 shadow-[0_0_32px_rgba(0,255,136,0.1)]">
+                    Download Bundle 
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Contextual Utility Tooltip (Example of Glassmorphism Command Palette hint) -->
+<div class="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 bg-surface-container-highest/70 backdrop-blur-xl border border-outline-variant/30 flex items-center gap-4 z-50">
+<span class="font-mono text-[10px] text-outline uppercase tracking-widest">Quick Commands:</span>
+<div class="flex items-center gap-2">
+<kbd class="px-1.5 py-0.5 bg-surface-variant text-on-surface text-[10px] font-mono border border-outline-variant">⌘</kbd>
+<kbd class="px-1.5 py-0.5 bg-surface-variant text-on-surface text-[10px] font-mono border border-outline-variant">K</kbd>
+<span class="text-[10px] text-on-surface-variant font-mono">Search Trace</span>
+</div>
+</div>
+</body></html>
+
+<!-- Graft - Main Workspace -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GRAFT | Extract Features Instantly</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#00e479",
+                        "surface-dim": "#131313",
+                        "on-error": "#690005",
+                        "surface-container": "#201f1f",
+                        "outline-variant": "#3b4b3d",
+                        "on-primary": "#003919",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#94f0ab",
+                        "on-background": "#e5e2e1",
+                        "primary-container": "#00ff88",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffe08d",
+                        "surface-container-low": "#1c1b1b",
+                        "tertiary": "#fffaf7",
+                        "inverse-primary": "#006d37",
+                        "on-tertiary-fixed": "#241a00",
+                        "secondary-fixed": "#9af7b0",
+                        "on-secondary-fixed-variant": "#005228",
+                        "surface-container-lowest": "#0e0e0e",
+                        "background": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "on-primary-fixed": "#00210c",
+                        "on-tertiary": "#3d2f00",
+                        "on-primary-container": "#007139",
+                        "surface-bright": "#3a3939",
+                        "on-surface-variant": "#b9cbb9",
+                        "secondary-container": "#027038",
+                        "outline": "#849585",
+                        "tertiary-fixed-dim": "#e5c364",
+                        "primary-fixed": "#60ff99",
+                        "tertiary-container": "#ffdb79",
+                        "secondary": "#7eda96",
+                        "secondary-fixed-dim": "#7eda96",
+                        "surface-variant": "#353534",
+                        "on-tertiary-container": "#795f01",
+                        "primary": "#f1ffef",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary-fixed-variant": "#584400",
+                        "surface": "#131313",
+                        "surface-tint": "#00e479",
+                        "on-primary-fixed-variant": "#005228",
+                        "inverse-surface": "#e5e2e1",
+                        "on-secondary-fixed": "#00210c",
+                        "surface-container-highest": "#353534",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary": "#003919"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["JetBrains Mono"]
+                    },
+                    borderRadius: { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #0e0e0e;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+        }
+        .terminal-glow:focus-within {
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1c1b1b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #353534;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #849585;
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-[#131313] flex justify-between items-center w-full px-6 h-14 fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="font-mono text-xl tracking-tighter text-[#00FF88]">GRAFT</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="font-label text-xs uppercase tracking-widest text-zinc-400 hover:bg-[#2a2a2a] hover:text-[#00FF88] transition-colors duration-150 px-3 py-1 scale-98 active:opacity-80">
+                Documentation
+            </button>
+<button class="bg-primary-container text-on-primary-container font-label text-xs uppercase tracking-widest px-4 py-1.5 font-bold hover:bg-primary-fixed transition-colors scale-98 active:opacity-80">
+                New Repo
+            </button>
+</div>
+</header>
+<!-- Main Content: Landing / Repo Input -->
+<main class="flex-grow flex items-center justify-center p-6 mt-14">
+<div class="max-w-4xl w-full flex flex-col items-center">
+<!-- Branding & Tagline -->
+<div class="text-center mb-12">
+<h1 class="font-headline text-8xl font-bold tracking-tighter text-on-background mb-4">
+                    GRAFT<span class="text-primary-container">_</span>
+</h1>
+<p class="font-body text-xl text-on-surface-variant max-w-xl mx-auto leading-relaxed">
+                    Extract any feature from any codebase. <br/>
+                    Drop it into yours.
+                </p>
+</div>
+<!-- Terminal Input Section -->
+<div class="w-full max-w-3xl terminal-glow transition-all duration-300">
+<div class="bg-surface p-1 flex items-stretch border border-outline-variant/30 focus-within:border-primary-container transition-colors">
+<div class="flex items-center px-4 text-primary-container">
+<span class="material-symbols-outlined text-xl" data-icon="terminal">terminal</span>
+</div>
+<input class="flex-grow bg-transparent border-none focus:ring-0 text-on-surface font-label text-lg py-4 placeholder:text-zinc-600" placeholder="https://github.com/owner/repo" type="text"/>
+<button class="bg-primary-container text-on-primary-container font-label text-sm font-bold uppercase tracking-widest px-8 hover:bg-primary-fixed-dim transition-all active:scale-95">
+                        Analyze
+                    </button>
+</div>
+</div>
+<!-- Callouts / Steps -->
+<div class="mt-16 w-full max-w-3xl">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Step 1 -->
+<div class="flex items-center gap-4 group">
+<div class="w-10 h-10 flex items-center justify-center bg-surface-container-high text-primary-container">
+<span class="material-symbols-outlined" data-icon="content_paste">content_paste</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label text-[10px] uppercase tracking-tighter text-zinc-500">Step 01</span>
+<span class="font-body text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Paste a repo</span>
+</div>
+<div class="hidden md:block ml-auto text-zinc-800">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex items-center gap-4 group">
+<div class="w-10 h-10 flex items-center justify-center bg-surface-container-high text-primary-container">
+<span class="material-symbols-outlined" data-icon="target">target</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label text-[10px] uppercase tracking-tighter text-zinc-500">Step 02</span>
+<span class="font-body text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Pick a feature</span>
+</div>
+<div class="hidden md:block ml-auto text-zinc-800">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex items-center gap-4 group">
+<div class="w-10 h-10 flex items-center justify-center bg-surface-container-high text-primary-container">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label text-[10px] uppercase tracking-tighter text-zinc-500">Step 03</span>
+<span class="font-body text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Download recipe</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Decorative Element -->
+<div class="mt-24 opacity-20 pointer-events-none">
+<div class="flex gap-2">
+<div class="h-[1px] w-32 bg-gradient-to-r from-transparent to-primary-container"></div>
+<div class="h-[1px] w-4 bg-primary-container"></div>
+<div class="h-[1px] w-1 bg-primary-container"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Meta -->
+<footer class="p-6 flex justify-between items-end">
+<div class="flex flex-col gap-1">
+<span class="font-label text-[10px] text-zinc-600 uppercase tracking-[0.2em]">System Status</span>
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 bg-primary-container rounded-full"></div>
+<span class="font-label text-[10px] text-primary-container uppercase">Engine_v1.0.4_Stable</span>
+</div>
+</div>
+<div class="flex gap-6">
+<a class="font-label text-[10px] text-zinc-600 hover:text-on-surface transition-colors uppercase tracking-widest" href="#">Github</a>
+<a class="font-label text-[10px] text-zinc-600 hover:text-on-surface transition-colors uppercase tracking-widest" href="#">Twitter</a>
+<a class="font-label text-[10px] text-zinc-600 hover:text-on-surface transition-colors uppercase tracking-widest" href="#">Discord</a>
+</div>
+</footer>
+<!-- Background Decoration Grid -->
+<div class="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+<div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(#00FF88 0.5px, transparent 0.5px); background-size: 24px 24px;"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-container/5 blur-[120px] rounded-full"></div>
+</div>
+</body></html>
+
+<!-- Graft - Landing -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GRAFT | Ingesting Repository</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#00e479",
+                        "surface-dim": "#131313",
+                        "on-error": "#690005",
+                        "surface-container": "#201f1f",
+                        "outline-variant": "#3b4b3d",
+                        "on-primary": "#003919",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#94f0ab",
+                        "on-background": "#e5e2e1",
+                        "primary-container": "#00ff88",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffe08d",
+                        "surface-container-low": "#1c1b1b",
+                        "tertiary": "#fffaf7",
+                        "inverse-primary": "#006d37",
+                        "on-tertiary-fixed": "#241a00",
+                        "secondary-fixed": "#9af7b0",
+                        "on-secondary-fixed-variant": "#005228",
+                        "surface-container-lowest": "#0e0e0e",
+                        "background": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "on-primary-fixed": "#00210c",
+                        "on-tertiary": "#3d2f00",
+                        "on-primary-container": "#007139",
+                        "surface-bright": "#3a3939",
+                        "on-surface-variant": "#b9cbb9",
+                        "secondary-container": "#027038",
+                        "outline": "#849585",
+                        "tertiary-fixed-dim": "#e5c364",
+                        "primary-fixed": "#60ff99",
+                        "tertiary-container": "#ffdb79",
+                        "secondary": "#7eda96",
+                        "secondary-fixed-dim": "#7eda96",
+                        "surface-variant": "#353534",
+                        "on-tertiary-container": "#795f01",
+                        "primary": "#f1ffef",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary-fixed-variant": "#584400",
+                        "surface": "#131313",
+                        "surface-tint": "#00e479",
+                        "on-primary-fixed-variant": "#005228",
+                        "inverse-surface": "#e5e2e1",
+                        "on-secondary-fixed": "#00210c",
+                        "surface-container-highest": "#353534",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary": "#003919"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["JetBrains Mono"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+        }
+        .animate-pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .scan-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00FF88, transparent);
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { transform: translateY(-100px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(100px); opacity: 0; }
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0e0e0e; }
+        ::-webkit-scrollbar-thumb { background: #353534; }
+        ::-webkit-scrollbar-thumb:hover { background: #849585; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
+<!-- TopNavBar: Execution from JSON -->
+<nav class="bg-[#131313] flex justify-between items-center w-full px-6 h-14 fixed top-0 z-50">
+<div class="font-mono text-xl tracking-tighter text-[#00FF88] font-bold">
+            GRAFT
+        </div>
+<div class="hidden md:flex gap-8 items-center h-full">
+<!-- No links for this state per JSON suppress logic - this is a transactional loading state -->
+</div>
+<button class="bg-primary-container text-on-primary-container px-4 py-1 font-label text-xs uppercase tracking-widest hover:bg-[#2a2a2a] hover:text-[#00FF88] transition-colors duration-150 active:opacity-80">
+            NEW REPO
+        </button>
+</nav>
+<!-- SideNavBar: Execution from JSON (Suppressed for focused loading journey) -->
+<!-- Content Canvas -->
+<main class="flex items-center justify-center min-h-screen w-full relative">
+<!-- Ambient background glow -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-container opacity-[0.03] blur-[120px] rounded-full"></div>
+</div>
+<div class="z-10 w-full max-w-2xl px-8 flex flex-col items-center">
+<!-- Top: Repo URL -->
+<div class="mb-12 text-center">
+<div class="font-label text-[10px] text-on-surface-variant uppercase tracking-[0.2em] mb-3">
+                    TARGET REPOSITORY
+                </div>
+<div class="font-label text-lg text-primary-fixed-dim bg-surface-container-low px-4 py-2 border border-outline-variant/20 inline-block max-w-md truncate">
+                    https://github.com/fastapi/fastapi
+                </div>
+</div>
+<!-- Center: Pulsing Indicator -->
+<div class="relative w-32 h-32 flex items-center justify-center mb-16">
+<!-- Glowing Outer Rings -->
+<div class="absolute inset-0 border border-primary-container/20 rounded-full animate-pulse-ring"></div>
+<div class="absolute inset-4 border border-primary-container/40 rounded-full animate-pulse-ring" style="animation-delay: 0.5s;"></div>
+<!-- Central Core -->
+<div class="relative z-10 w-12 h-12 bg-primary-container flex items-center justify-center shadow-[0_0_40px_rgba(0,255,136,0.4)]">
+<span class="material-symbols-outlined text-on-primary font-bold" style="font-variation-settings: 'FILL' 1;">
+                        database
+                    </span>
+</div>
+<!-- Orbiting bits -->
+<div class="absolute w-full h-full animate-[spin_10s_linear_infinite]">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-primary-container"></div>
+</div>
+<div class="absolute w-full h-full animate-[spin_15s_linear_reverse_infinite]">
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-outline-variant"></div>
+</div>
+</div>
+<!-- Bottom: Status Cycling -->
+<div class="w-full flex flex-col items-center">
+<div class="h-6 overflow-hidden relative w-full flex justify-center">
+<span class="font-label text-sm text-primary-container uppercase tracking-widest animate-[pulse_2s_infinite]">
+                        Cloning repository...
+                    </span>
+<!-- Hidden states for structural spacing -->
+<span class="absolute opacity-0 font-label text-sm">Reading the README...</span>
+<span class="absolute opacity-0 font-label text-sm">Mapping features...</span>
+</div>
+<!-- Progress Bar Detail -->
+<div class="w-64 h-[1px] bg-outline-variant/30 mt-8 relative overflow-hidden">
+<div class="absolute inset-0 bg-primary-container w-1/3 animate-[slide_3s_infinite_linear]" style="animation-name: progress-slide;"></div>
+</div>
+</div>
+<!-- Metadata Terminal-style -->
+<div class="mt-24 w-full grid grid-cols-3 gap-1 border-t border-outline-variant/10 pt-4">
+<div class="flex flex-col gap-1">
+<span class="font-label text-[9px] text-zinc-500 uppercase tracking-tighter">System</span>
+<span class="font-label text-[11px] text-zinc-300">GRAFT_ENGINE_V1</span>
+</div>
+<div class="flex flex-col gap-1 text-center">
+<span class="font-label text-[9px] text-zinc-500 uppercase tracking-tighter">Status</span>
+<span class="font-label text-[11px] text-primary-container">INGESTING</span>
+</div>
+<div class="flex flex-col gap-1 text-right">
+<span class="font-label text-[9px] text-zinc-500 uppercase tracking-tighter">Latency</span>
+<span class="font-label text-[11px] text-zinc-300">14ms</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Overlay scanning effect -->
+<div class="fixed inset-0 pointer-events-none opacity-[0.03]">
+<div class="w-full h-full bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,#fff_2px,#fff_4px)]"></div>
+</div>
+<style>
+        @keyframes progress-slide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(300%); }
+        }
+    </style>
+</body></html>
+
+<!-- Graft - Ingesting State -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GRAFT | Main Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#00e479",
+                        "surface-dim": "#131313",
+                        "on-error": "#690005",
+                        "surface-container": "#201f1f",
+                        "outline-variant": "#3b4b3d",
+                        "on-primary": "#003919",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#94f0ab",
+                        "on-background": "#e5e2e1",
+                        "primary-container": "#00ff88",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffe08d",
+                        "surface-container-low": "#1c1b1b",
+                        "tertiary": "#fffaf7",
+                        "inverse-primary": "#006d37",
+                        "on-tertiary-fixed": "#241a00",
+                        "secondary-fixed": "#9af7b0",
+                        "on-secondary-fixed-variant": "#005228",
+                        "surface-container-lowest": "#0e0e0e",
+                        "background": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "on-primary-fixed": "#00210c",
+                        "on-tertiary": "#3d2f00",
+                        "on-primary-container": "#007139",
+                        "surface-bright": "#3a3939",
+                        "on-surface-variant": "#b9cbb9",
+                        "secondary-container": "#027038",
+                        "outline": "#849585",
+                        "tertiary-fixed-dim": "#e5c364",
+                        "primary-fixed": "#60ff99",
+                        "tertiary-container": "#ffdb79",
+                        "secondary": "#7eda96",
+                        "secondary-fixed-dim": "#7eda96",
+                        "surface-variant": "#353534",
+                        "on-tertiary-container": "#795f01",
+                        "primary": "#f1ffef",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary-fixed-variant": "#584400",
+                        "surface": "#131313",
+                        "surface-tint": "#00e479",
+                        "on-primary-fixed-variant": "#005228",
+                        "inverse-surface": "#e5e2e1",
+                        "on-secondary-fixed": "#00210c",
+                        "surface-container-highest": "#353534",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary": "#003919"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    },
+                    borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+            font-size: 1.25rem;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #1c1b1b; }
+        ::-webkit-scrollbar-thumb { background: #353534; }
+        ::-webkit-scrollbar-thumb:hover { background: #849585; }
+        .node-connector {
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            background: #2a2a2a;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-6 h-14 bg-[#131313] border-b border-[#2a2a2a] z-50">
+<div class="flex items-center gap-4">
+<span class="font-mono text-xl tracking-tighter text-[#00FF88]">GRAFT</span>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<nav class="flex gap-6 text-xs font-mono uppercase tracking-widest"><a class="text-[#00FF88] font-bold" href="#">Repositories</a></nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-1.5 border border-outline-variant text-on-surface-variant text-xs font-mono uppercase tracking-wider hover:bg-[#2a2a2a] hover:text-[#00FF88] transition-all duration-200 active:opacity-80">
+                New Repo
+            </button>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- Left Panel: Feature List (35%) -->
+<section class="w-[35%] flex flex-col border-r border-[#2a2a2a] bg-surface-container-lowest">
+<div class="p-6 border-b border-[#2a2a2a]">
+<div class="flex items-center justify-between mb-1">
+<h1 class="font-mono font-bold text-lg text-on-surface tracking-tight">fastapi/fastapi</h1>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-container">open_in_new</span>
+</div>
+<p class="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">42 files · Python, TypeScript, Shell</p>
+</div>
+<div class="flex-1 overflow-y-auto">
+<!-- Active Feature Card -->
+<div class="group relative p-5 bg-surface-container-low border-l-2 border-[#00FF88] transition-all duration-200">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-primary-container mb-1">Authentication Flow</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">OAuth2 with Password flow and JWT tokens implementation for secure access.</p>
+</div>
+<button class="flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Feature Card -->
+<div class="group relative p-5 border-l-2 border-transparent hover:bg-surface-container-high transition-all duration-200 cursor-pointer">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-on-surface mb-1">Background Tasks</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">Asynchronous execution of long-running processes after returning responses.</p>
+</div>
+<button class="hidden group-hover:flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Feature Card -->
+<div class="group relative p-5 border-l-2 border-transparent hover:bg-surface-container-high transition-all duration-200 cursor-pointer">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-on-surface mb-1">Dependency Injection</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">Hierarchical dependency system for managing database sessions and security.</p>
+</div>
+<button class="hidden group-hover:flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Feature Card -->
+<div class="group relative p-5 border-l-2 border-transparent hover:bg-surface-container-high transition-all duration-200 cursor-pointer">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-on-surface mb-1">Pydantic Validation</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">Automated data validation and serialization using Pydantic models.</p>
+</div>
+<button class="hidden group-hover:flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Trace View (65%) -->
+<section class="flex-1 flex flex-col bg-surface overflow-hidden relative">
+<div class="flex-1 overflow-y-auto p-8 pb-32">
+<div class="max-w-3xl">
+<h2 class="font-headline text-3xl font-bold text-on-surface mb-4 tracking-tight">Authentication Flow</h2>
+<p class="text-on-surface-variant leading-relaxed mb-12 text-sm">OAuth2 with Password flow and JWT tokens implementation for secure access.</p>
+<!-- Call Chain Visualization -->
+<div class="mb-16">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline mb-8">Call Chain Tree</h4>
+<div class="space-y-12">
+<!-- Root Node -->
+<div class="relative pl-12">
+<div class="node-connector"></div>
+<div class="absolute left-0 top-0 w-10 h-10 border-2 border-primary-container bg-surface flex items-center justify-center z-10">
+<span class="text-[10px] font-mono font-bold text-primary-container">PY</span>
+</div>
+<div>
+<div class="flex items-center gap-2 font-mono text-sm mb-1">
+<span class="text-on-surface-variant">fastapi/security/oauth2.py</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span class="font-bold text-on-surface">OAuth2PasswordBearer</span>
+</div>
+<p class="text-xs text-on-surface-variant">Entry point: Extracts credentials from request headers.</p>
+</div>
+</div>
+<!-- Child Node 1 -->
+<div class="relative pl-12">
+<div class="node-connector"></div>
+<div class="absolute left-0 top-0 w-10 h-10 border border-outline-variant bg-surface flex items-center justify-center z-10">
+<span class="text-[10px] font-mono font-bold text-primary-container">PY</span>
+</div>
+<div>
+<div class="flex items-center gap-2 font-mono text-sm mb-1">
+<span class="text-on-surface-variant">app/auth/utils.py</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span class="font-bold text-on-surface">verify_password</span>
+</div>
+<p class="text-xs text-on-surface-variant">Cryptographic check: compares bcrypt hash of input vs database.</p>
+</div>
+</div>
+<!-- Child Node 2 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 border border-outline-variant bg-surface flex items-center justify-center z-10">
+<span class="text-[10px] font-mono font-bold text-primary-container">PY</span>
+</div>
+<div>
+<div class="flex items-center gap-2 font-mono text-sm mb-1">
+<span class="text-on-surface-variant">app/auth/jwt.py</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span class="font-bold text-on-surface">create_access_token</span>
+</div>
+<p class="text-xs text-on-surface-variant">Output generation: Signs payload with SECRET_KEY.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Details Grid -->
+<div class="grid grid-cols-2 gap-8 mb-12">
+<!-- Files Involved -->
+<div class="space-y-4">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline">Files Involved</h4>
+<div class="bg-surface-container-lowest p-4 border border-outline-variant/20 space-y-3">
+<div class="flex items-center justify-between text-[11px] font-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">description</span>
+<span class="text-on-surface">security/oauth2.py</span>
+</div>
+<span class="text-outline">L142-180</span>
+</div>
+<div class="flex items-center justify-between text-[11px] font-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">description</span>
+<span class="text-on-surface">auth/utils.py</span>
+</div>
+<span class="text-outline">L24-42</span>
+</div>
+<div class="flex items-center justify-between text-[11px] font-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">description</span>
+<span class="text-on-surface">models/user.py</span>
+</div>
+<span class="text-outline">L89-112</span>
+</div>
+</div>
+</div>
+<!-- Dependencies -->
+<div class="space-y-4">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline">Dependencies</h4>
+<div class="relative bg-surface-container-low p-4 border border-outline-variant/20">
+<code class="text-[11px] font-mono text-on-surface leading-tight block">
+                                    pip install python-jose[cryptography]<br/>
+                                    pip install passlib[bcrypt]
+                                </code>
+<button class="absolute top-2 right-2 text-outline hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined text-base">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Env Vars -->
+<div class="space-y-4">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline">Required Environment Variables</h4>
+<div class="w-full border border-outline-variant/20 bg-surface-container-lowest">
+<table class="w-full text-left font-mono text-[11px]">
+<thead>
+<tr class="border-b border-outline-variant/20 text-outline">
+<th class="px-4 py-2 font-medium">VARIABLE_NAME</th>
+<th class="px-4 py-2 font-medium">DEFAULT_VALUE</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr>
+<td class="px-4 py-3 text-primary-container">SECRET_KEY</td>
+<td class="px-4 py-3 text-on-surface-variant italic">CHANGE_ME</td>
+</tr>
+<tr>
+<td class="px-4 py-3 text-primary-container">ALGORITHM</td>
+<td class="px-4 py-3 text-on-surface-variant">HS256</td>
+</tr>
+<tr>
+<td class="px-4 py-3 text-primary-container">ACCESS_TOKEN_EXPIRE_MINUTES</td>
+<td class="px-4 py-3 text-on-surface-variant">30</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Bottom Action -->
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent pointer-events-none">
+<button class="pointer-events-auto w-full h-14 bg-primary-container text-on-primary-container font-mono font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-primary-fixed-dim transition-all duration-200 shadow-[0_0_32px_rgba(0,255,136,0.1)]">
+                    Download Bundle 
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Contextual Utility Tooltip (Example of Glassmorphism Command Palette hint) -->
+<div class="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 bg-surface-container-highest/70 backdrop-blur-xl border border-outline-variant/30 flex items-center gap-4 z-50">
+<span class="font-mono text-[10px] text-outline uppercase tracking-widest">Quick Commands:</span>
+<div class="flex items-center gap-2">
+<kbd class="px-1.5 py-0.5 bg-surface-variant text-on-surface text-[10px] font-mono border border-outline-variant">⌘</kbd>
+<kbd class="px-1.5 py-0.5 bg-surface-variant text-on-surface text-[10px] font-mono border border-outline-variant">K</kbd>
+<span class="text-[10px] text-on-surface-variant font-mono">Search Trace</span>
+</div>
+</div>
+</body></html>
+
+<!-- Graft - Refined Workspace -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GRAFT | Main Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#00e479",
+                        "surface-dim": "#131313",
+                        "on-error": "#690005",
+                        "surface-container": "#201f1f",
+                        "outline-variant": "#3b4b3d",
+                        "on-primary": "#003919",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#94f0ab",
+                        "on-background": "#e5e2e1",
+                        "primary-container": "#00ff88",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffe08d",
+                        "surface-container-low": "#1c1b1b",
+                        "tertiary": "#fffaf7",
+                        "inverse-primary": "#006d37",
+                        "on-tertiary-fixed": "#241a00",
+                        "secondary-fixed": "#9af7b0",
+                        "on-secondary-fixed-variant": "#005228",
+                        "surface-container-lowest": "#0e0e0e",
+                        "background": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "on-primary-fixed": "#00210c",
+                        "on-tertiary": "#3d2f00",
+                        "on-primary-container": "#007139",
+                        "surface-bright": "#3a3939",
+                        "on-surface-variant": "#b9cbb9",
+                        "secondary-container": "#027038",
+                        "outline": "#849585",
+                        "tertiary-fixed-dim": "#e5c364",
+                        "primary-fixed": "#60ff99",
+                        "tertiary-container": "#ffdb79",
+                        "secondary": "#7eda96",
+                        "secondary-fixed-dim": "#7eda96",
+                        "surface-variant": "#353534",
+                        "on-tertiary-container": "#795f01",
+                        "primary": "#f1ffef",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary-fixed-variant": "#584400",
+                        "surface": "#131313",
+                        "surface-tint": "#00e479",
+                        "on-primary-fixed-variant": "#005228",
+                        "inverse-surface": "#e5e2e1",
+                        "on-secondary-fixed": "#00210c",
+                        "surface-container-highest": "#353534",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary": "#003919"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    },
+                    borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+            font-size: 1.25rem;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #1c1b1b; }
+        ::-webkit-scrollbar-thumb { background: #353534; }
+        ::-webkit-scrollbar-thumb:hover { background: #849585; }
+        .node-connector {
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            background: #2a2a2a;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-6 h-14 bg-[#131313] border-b border-[#2a2a2a] z-50">
+<div class="flex items-center gap-4">
+<span class="font-mono text-xl tracking-tighter text-[#00FF88]">GRAFT</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-1.5 border border-outline-variant text-on-surface-variant text-xs font-mono uppercase tracking-wider hover:bg-[#2a2a2a] hover:text-[#00FF88] transition-all duration-200 active:opacity-80">
+                New Repo
+            </button>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- Left Panel: Feature List (35%) -->
+<section class="w-[35%] flex flex-col border-r border-[#2a2a2a] bg-surface-container-lowest">
+<div class="p-6 border-b border-[#2a2a2a]">
+<div class="flex items-center justify-between mb-1">
+<h1 class="font-mono font-bold text-lg text-on-surface tracking-tight">fastapi/fastapi</h1>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-container">open_in_new</span>
+</div>
+<p class="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">42 files · Python, TypeScript, Shell</p>
+</div>
+<div class="flex-1 overflow-y-auto">
+<!-- Active Feature Card -->
+<div class="group relative p-5 bg-surface-container-low border-l-2 border-[#00FF88] transition-all duration-200">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-primary-container mb-1">Authentication Flow</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">OAuth2 with Password flow and JWT tokens implementation for secure access.</p>
+</div>
+<button class="flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Feature Card -->
+<div class="group relative p-5 border-l-2 border-transparent hover:bg-surface-container-high transition-all duration-200 cursor-pointer">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-on-surface mb-1">Background Tasks</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">Asynchronous execution of long-running processes after returning responses.</p>
+</div>
+<button class="hidden group-hover:flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Feature Card -->
+<div class="group relative p-5 border-l-2 border-transparent hover:bg-surface-container-high transition-all duration-200 cursor-pointer">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-on-surface mb-1">Dependency Injection</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">Hierarchical dependency system for managing database sessions and security.</p>
+</div>
+<button class="hidden group-hover:flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Feature Card -->
+<div class="group relative p-5 border-l-2 border-transparent hover:bg-surface-container-high transition-all duration-200 cursor-pointer">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-sm font-medium text-on-surface mb-1">Pydantic Validation</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">Automated data validation and serialization using Pydantic models.</p>
+</div>
+<button class="hidden group-hover:flex items-center gap-1 font-mono text-[10px] text-primary-container uppercase tracking-tighter">
+                            Trace <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Trace View (65%) -->
+<section class="flex-1 flex flex-col bg-surface overflow-hidden relative">
+<div class="flex-1 overflow-y-auto p-8 pb-32">
+<div class="max-w-3xl">
+<h2 class="font-headline text-3xl font-bold text-white mb-1 tracking-tight">Authentication Flow</h2>
+<p class="text-on-surface-variant leading-relaxed mb-12 text-sm">OAuth2 with Password flow and JWT tokens implementation for secure access.</p>
+<!-- Call Chain Visualization -->
+<div class="mb-16">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline mb-8">Call Chain Tree</h4>
+<div class="space-y-12">
+<!-- Root Node -->
+<div class="relative pl-12">
+<div class="node-connector"></div>
+<div class="absolute left-0 top-0 w-10 h-10 border-2 border-primary-container bg-surface flex items-center justify-center z-10">
+<span class="text-[10px] font-mono font-bold text-primary-container">PY</span>
+</div>
+<div>
+<div class="flex items-center gap-2 font-mono text-sm mb-1">
+<span class="text-on-surface-variant">fastapi/security/oauth2.py</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span class="font-bold text-on-surface">OAuth2PasswordBearer</span>
+</div>
+<p class="text-xs text-on-surface-variant">Entry point: Extracts credentials from request headers.</p>
+</div>
+</div>
+<!-- Child Node 1 -->
+<div class="relative pl-12">
+<div class="node-connector"></div>
+<div class="absolute left-0 top-0 w-10 h-10 border border-outline-variant bg-surface flex items-center justify-center z-10">
+<span class="text-[10px] font-mono font-bold text-primary-container">PY</span>
+</div>
+<div>
+<div class="flex items-center gap-2 font-mono text-sm mb-1">
+<span class="text-on-surface-variant">app/auth/utils.py</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span class="font-bold text-on-surface">verify_password</span>
+</div>
+<p class="text-xs text-on-surface-variant">Cryptographic check: compares bcrypt hash of input vs database.</p>
+</div>
+</div>
+<!-- Child Node 2 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 border border-outline-variant bg-surface flex items-center justify-center z-10">
+<span class="text-[10px] font-mono font-bold text-primary-container">PY</span>
+</div>
+<div>
+<div class="flex items-center gap-2 font-mono text-sm mb-1">
+<span class="text-on-surface-variant">app/auth/jwt.py</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span class="font-bold text-on-surface">create_access_token</span>
+</div>
+<p class="text-xs text-on-surface-variant">Output generation: Signs payload with SECRET_KEY.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Details Grid -->
+<div class="grid grid-cols-2 gap-8 mb-12">
+<!-- Files Involved -->
+<div class="space-y-4">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline">Files Involved</h4>
+<div class="bg-surface-container-lowest p-4 border border-outline-variant/20 space-y-3">
+<div class="flex items-center justify-between text-[11px] font-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">description</span>
+<span class="text-on-surface">security/oauth2.py</span>
+</div>
+<span class="text-outline">L142-180</span>
+</div>
+<div class="flex items-center justify-between text-[11px] font-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">description</span>
+<span class="text-on-surface">auth/utils.py</span>
+</div>
+<span class="text-outline">L24-42</span>
+</div>
+<div class="flex items-center justify-between text-[11px] font-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">description</span>
+<span class="text-on-surface">models/user.py</span>
+</div>
+<span class="text-outline">L89-112</span>
+</div>
+</div>
+</div>
+<!-- Dependencies -->
+<div class="space-y-4">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline">Dependencies</h4>
+<div class="relative bg-surface-container-low p-4 border border-outline-variant/20">
+<code class="text-[11px] font-mono text-on-surface leading-tight block">
+                                    pip install python-jose[cryptography]<br/>
+                                    pip install passlib[bcrypt]
+                                </code>
+<button class="absolute top-2 right-2 text-outline hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined text-base">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Env Vars -->
+<div class="space-y-4">
+<h4 class="font-mono text-[10px] uppercase tracking-widest text-outline">Required Environment Variables</h4>
+<div class="w-full border border-outline-variant/20 bg-surface-container-lowest">
+<table class="w-full text-left font-mono text-[11px]">
+<thead>
+<tr class="border-b border-outline-variant/20 text-outline">
+<th class="px-4 py-2 font-medium">VARIABLE_NAME</th>
+<th class="px-4 py-2 font-medium">DEFAULT_VALUE</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr>
+<td class="px-4 py-3 text-primary-container">SECRET_KEY</td>
+<td class="px-4 py-3 text-on-surface-variant italic">CHANGE_ME</td>
+</tr>
+<tr>
+<td class="px-4 py-3 text-primary-container">ALGORITHM</td>
+<td class="px-4 py-3 text-on-surface-variant">HS256</td>
+</tr>
+<tr>
+<td class="px-4 py-3 text-primary-container">ACCESS_TOKEN_EXPIRE_MINUTES</td>
+<td class="px-4 py-3 text-on-surface-variant">30</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Bottom Action -->
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent pointer-events-none">
+<button class="pointer-events-auto w-full h-14 bg-primary-container text-on-primary-container font-mono font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-primary-fixed-dim transition-all duration-200 shadow-[0_0_32px_rgba(0,255,136,0.1)]">
+                    Download Bundle 
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</section>
+</main>
+</body></html>
