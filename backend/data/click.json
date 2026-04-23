@@ -1,0 +1,78 @@
+{
+  "repo_name": "click",
+  "repo_owner": "pallets",
+  "github_url": "https://github.com/pallets/click",
+  "file_count": 42,
+  "languages_detected": ["Python"],
+  "features": [
+    {
+      "slug": "command_groups",
+      "name": "Command Groups",
+      "description": "Nested command group system for building complex CLI hierarchies with shared options."
+    },
+    {
+      "slug": "parameter_types",
+      "name": "Parameter Types",
+      "description": "Extensible type system for parsing and validating CLI arguments including Choice, Path, and custom types."
+    },
+    {
+      "slug": "context_management",
+      "name": "Context Management",
+      "description": "Hierarchical context stack for passing state between parent and child commands."
+    },
+    {
+      "slug": "help_generation",
+      "name": "Help Generation",
+      "description": "Automatic help page generation from docstrings and parameter definitions with customizable formatting."
+    },
+    {
+      "slug": "shell_completion",
+      "name": "Shell Completion",
+      "description": "Tab completion support for Bash, Zsh, and Fish shells with custom completion providers."
+    },
+    {
+      "slug": "file_handling",
+      "name": "File Handling",
+      "description": "Special File type for handling stdin/stdout piping and lazy file opening with proper cleanup."
+    }
+  ],
+  "traces": {
+    "command_groups": {
+      "entry_point": { "file": "src/click/core.py", "function": "Group.invoke" },
+      "call_chain": [
+        { "file": "src/click/core.py", "function": "Group.invoke", "line_start": 1320, "line_end": 1400, "role": "Resolves the subcommand name, looks it up in the registered commands, and invokes it with a new context." },
+        { "file": "src/click/core.py", "function": "Group.command", "line_start": 1240, "line_end": 1280, "role": "Decorator that registers a function as a subcommand within the group." },
+        { "file": "src/click/core.py", "function": "BaseCommand.main", "line_start": 985, "line_end": 1060, "role": "CLI entry point that sets up the context, parses arguments, and triggers the command chain." },
+        { "file": "src/click/core.py", "function": "Context.__init__", "line_start": 210, "line_end": 295, "role": "Sets up the command context with the parent reference, parameters, and environment state." },
+        { "file": "src/click/core.py", "function": "MultiCommand.resolve_command", "line_start": 1180, "line_end": 1220, "role": "Resolves a command name to a Command object, handling aliases and prefix matching." }
+      ],
+      "third_party_deps": ["colorama"],
+      "env_vars": [],
+      "explanation": "Click's command group system uses a recursive invocation pattern. BaseCommand.main() is the CLI entry point — it creates a root Context and starts parsing. For Groups, Group.invoke() extracts the first positional argument as the subcommand name, resolves it via resolve_command(), and creates a child Context linked to the parent. The subcommand is then invoked with this child context. This recursive structure allows deeply nested command hierarchies where each level can have its own options, help text, and error handling. The Group.command() decorator registers functions as subcommands during import time.",
+      "candidate_files": ["src/click/core.py", "src/click/decorators.py", "src/click/parser.py"],
+      "graph_edges": [
+        ["src/click/core.py:BaseCommand.main", "src/click/core.py:Group.invoke"],
+        ["src/click/core.py:Group.invoke", "src/click/core.py:MultiCommand.resolve_command"],
+        ["src/click/core.py:Group.invoke", "src/click/core.py:Context.__init__"]
+      ]
+    },
+    "parameter_types": {
+      "entry_point": { "file": "src/click/types.py", "function": "ParamType.convert" },
+      "call_chain": [
+        { "file": "src/click/types.py", "function": "ParamType.convert", "line_start": 40, "line_end": 65, "role": "Base method that all type classes override to convert raw string input into the target Python type." },
+        { "file": "src/click/types.py", "function": "Choice.convert", "line_start": 220, "line_end": 270, "role": "Validates input against a set of allowed values with case-insensitive matching support." },
+        { "file": "src/click/types.py", "function": "Path.convert", "line_start": 320, "line_end": 390, "role": "Validates and resolves filesystem paths with existence, readability, and type checks." },
+        { "file": "src/click/core.py", "function": "Parameter.type_cast_value", "line_start": 620, "line_end": 660, "role": "Orchestrates type conversion by calling the appropriate ParamType.convert() for each parameter value." }
+      ],
+      "third_party_deps": [],
+      "env_vars": [],
+      "explanation": "Click's type system follows an object-oriented pattern where each type is a ParamType subclass implementing convert(value, param, ctx). Built-in types include STRING, INT, FLOAT, BOOL, Choice, Path, File, and IntRange. When a CLI argument is parsed, Parameter.type_cast_value() calls the type's convert() method which either returns the converted value or calls self.fail() to report an error. Users can create custom types by subclassing ParamType and overriding convert(). The type system also drives help text generation and shell completion.",
+      "candidate_files": ["src/click/types.py", "src/click/core.py", "src/click/decorators.py"],
+      "graph_edges": [
+        ["src/click/core.py:Parameter.type_cast_value", "src/click/types.py:ParamType.convert"],
+        ["src/click/types.py:ParamType.convert", "src/click/types.py:Choice.convert"],
+        ["src/click/types.py:ParamType.convert", "src/click/types.py:Path.convert"]
+      ]
+    }
+  }
+}

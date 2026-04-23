@@ -1,0 +1,101 @@
+{
+  "repo_name": "flask",
+  "repo_owner": "pallets",
+  "github_url": "https://github.com/pallets/flask",
+  "file_count": 72,
+  "languages_detected": ["Python"],
+  "features": [
+    {
+      "slug": "routing",
+      "name": "URL Routing",
+      "description": "Decorator-based URL routing system that maps URLs to view functions with support for variable rules and HTTP methods."
+    },
+    {
+      "slug": "blueprints",
+      "name": "Blueprints",
+      "description": "Modular application components that allow organizing routes, templates, and static files into reusable packages."
+    },
+    {
+      "slug": "template_rendering",
+      "name": "Template Rendering",
+      "description": "Jinja2-based template engine integration for rendering HTML templates with context variables."
+    },
+    {
+      "slug": "request_context",
+      "name": "Request Context",
+      "description": "Thread-local request context stack providing access to request data via the global request proxy object."
+    },
+    {
+      "slug": "error_handling",
+      "name": "Error Handling",
+      "description": "Custom error handler registration and built-in exception handling with configurable error responses."
+    },
+    {
+      "slug": "cli_integration",
+      "name": "CLI Integration",
+      "description": "Click-based command line interface for running the development server, shell access, and custom commands."
+    },
+    {
+      "slug": "signals",
+      "name": "Signals",
+      "description": "Blinker-based signal system for decoupled event notification during request processing lifecycle."
+    }
+  ],
+  "traces": {
+    "routing": {
+      "entry_point": { "file": "src/flask/app.py", "function": "Flask.route" },
+      "call_chain": [
+        { "file": "src/flask/app.py", "function": "Flask.route", "line_start": 1220, "line_end": 1260, "role": "Decorator that registers a URL rule by calling add_url_rule with the decorated function as the view." },
+        { "file": "src/flask/scaffold.py", "function": "Scaffold.add_url_rule", "line_start": 340, "line_end": 420, "role": "Core method that creates a Rule object and registers it with the URL map." },
+        { "file": "src/flask/app.py", "function": "Flask.full_dispatch_request", "line_start": 850, "line_end": 896, "role": "Handles the full request cycle: preprocessing, dispatching to the matched view, and postprocessing." },
+        { "file": "src/flask/app.py", "function": "Flask.dispatch_request", "line_start": 820, "line_end": 848, "role": "Looks up the URL rule match and calls the associated view function with captured URL parameters." },
+        { "file": "src/flask/wrappers.py", "function": "Request.url_rule", "line_start": 48, "line_end": 62, "role": "Property on the request object that exposes the matched URL rule for the current request." }
+      ],
+      "third_party_deps": ["werkzeug", "click", "jinja2", "markupsafe"],
+      "env_vars": ["FLASK_APP", "FLASK_ENV", "FLASK_DEBUG"],
+      "explanation": "Flask's routing starts with the @app.route() decorator which calls add_url_rule() under the hood. This creates a werkzeug.routing.Rule and adds it to the app's URL map. When a request arrives, full_dispatch_request() triggers the WSGI pipeline: before_request hooks run first, then dispatch_request() matches the incoming URL against registered rules using werkzeug's Map.bind(). The matched endpoint is resolved to a view function, called with URL parameters, and the return value is converted to a Response object. After_request hooks run on the response before it's returned to the client.",
+      "candidate_files": ["src/flask/app.py", "src/flask/scaffold.py", "src/flask/wrappers.py", "src/flask/ctx.py"],
+      "graph_edges": [
+        ["src/flask/app.py:Flask.route", "src/flask/scaffold.py:Scaffold.add_url_rule"],
+        ["src/flask/app.py:Flask.full_dispatch_request", "src/flask/app.py:Flask.dispatch_request"],
+        ["src/flask/app.py:Flask.dispatch_request", "src/flask/wrappers.py:Request.url_rule"]
+      ]
+    },
+    "blueprints": {
+      "entry_point": { "file": "src/flask/blueprints.py", "function": "Blueprint.__init__" },
+      "call_chain": [
+        { "file": "src/flask/blueprints.py", "function": "Blueprint.__init__", "line_start": 120, "line_end": 178, "role": "Initializes a blueprint with a name, import name, and deferred registration state." },
+        { "file": "src/flask/blueprints.py", "function": "Blueprint.register", "line_start": 250, "line_end": 340, "role": "Registers the blueprint with the application, executing all deferred setup actions." },
+        { "file": "src/flask/app.py", "function": "Flask.register_blueprint", "line_start": 980, "line_end": 1040, "role": "App-level method that triggers blueprint registration with optional URL prefix and subdomain overrides." },
+        { "file": "src/flask/scaffold.py", "function": "Scaffold.add_url_rule", "line_start": 340, "line_end": 420, "role": "Registers blueprint-scoped URL rules into the application's URL map with proper prefixing." }
+      ],
+      "third_party_deps": ["werkzeug"],
+      "env_vars": [],
+      "explanation": "Blueprints use a deferred registration pattern. When you create a Blueprint and add routes to it, the actions are stored as deferred callables. When app.register_blueprint() is called, it invokes Blueprint.register() which replays all deferred actions against the live application. URL rules are prefixed with the blueprint's url_prefix, and template/static paths are scoped to the blueprint's package. This allows modular organization of large applications while maintaining a single URL map.",
+      "candidate_files": ["src/flask/blueprints.py", "src/flask/app.py", "src/flask/scaffold.py"],
+      "graph_edges": [
+        ["src/flask/app.py:Flask.register_blueprint", "src/flask/blueprints.py:Blueprint.register"],
+        ["src/flask/blueprints.py:Blueprint.register", "src/flask/scaffold.py:Scaffold.add_url_rule"]
+      ]
+    },
+    "request_context": {
+      "entry_point": { "file": "src/flask/ctx.py", "function": "RequestContext.push" },
+      "call_chain": [
+        { "file": "src/flask/ctx.py", "function": "RequestContext.push", "line_start": 280, "line_end": 330, "role": "Pushes the request context onto the context stack, making request/g/session available as thread-local proxies." },
+        { "file": "src/flask/ctx.py", "function": "RequestContext.__enter__", "line_start": 332, "line_end": 338, "role": "Context manager entry that calls push() for use in with-statements." },
+        { "file": "src/flask/globals.py", "function": "request", "line_start": 24, "line_end": 30, "role": "Module-level proxy object that resolves to the current request on the context stack." },
+        { "file": "src/flask/app.py", "function": "Flask.wsgi_app", "line_start": 1480, "line_end": 1520, "role": "WSGI entry point that creates and pushes a RequestContext for each incoming request." },
+        { "file": "src/flask/ctx.py", "function": "RequestContext.pop", "line_start": 340, "line_end": 380, "role": "Pops the request context from the stack, cleaning up the request and session." }
+      ],
+      "third_party_deps": ["werkzeug"],
+      "env_vars": [],
+      "explanation": "Flask uses werkzeug's LocalStack to maintain a thread-local context stack. When a WSGI request arrives, Flask.wsgi_app() creates a RequestContext containing the Request object, session, and the 'g' namespace. This context is pushed onto the stack, making the global 'request' proxy object resolve to the current request. The proxy uses __getattr__ to delegate all access to the top of the context stack. When the request completes, the context is popped, cleaning up resources and ensuring thread safety in concurrent environments.",
+      "candidate_files": ["src/flask/ctx.py", "src/flask/globals.py", "src/flask/app.py", "src/flask/sessions.py"],
+      "graph_edges": [
+        ["src/flask/app.py:Flask.wsgi_app", "src/flask/ctx.py:RequestContext.push"],
+        ["src/flask/ctx.py:RequestContext.push", "src/flask/globals.py:request"],
+        ["src/flask/app.py:Flask.wsgi_app", "src/flask/ctx.py:RequestContext.pop"]
+      ]
+    }
+  }
+}

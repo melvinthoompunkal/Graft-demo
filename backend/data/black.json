@@ -1,0 +1,73 @@
+{
+  "repo_name": "black",
+  "repo_owner": "psf",
+  "github_url": "https://github.com/psf/black",
+  "file_count": 94,
+  "languages_detected": ["Python"],
+  "features": [
+    {
+      "slug": "code_formatting",
+      "name": "Code Formatting",
+      "description": "Deterministic Python code formatting that produces consistent output regardless of original style."
+    },
+    {
+      "slug": "ast_parsing",
+      "name": "AST-Safe Parsing",
+      "description": "Parses Python code into a CST while ensuring the AST remains equivalent after formatting."
+    },
+    {
+      "slug": "line_splitting",
+      "name": "Line Splitting",
+      "description": "Intelligent line splitting algorithm that minimizes vertical space while respecting line length limits."
+    },
+    {
+      "slug": "magic_trailing_comma",
+      "name": "Magic Trailing Comma",
+      "description": "Forces multi-line formatting for collections with trailing commas, keeping diffs minimal."
+    },
+    {
+      "slug": "string_processing",
+      "name": "String Processing",
+      "description": "Normalizes string quotes, handles implicit string concatenation, and manages long string splitting."
+    }
+  ],
+  "traces": {
+    "code_formatting": {
+      "entry_point": { "file": "src/black/__init__.py", "function": "format_file_contents" },
+      "call_chain": [
+        { "file": "src/black/__init__.py", "function": "format_file_contents", "line_start": 1050, "line_end": 1120, "role": "Top-level function that takes source code and returns formatted output, with AST equivalence checking." },
+        { "file": "src/black/__init__.py", "function": "format_str", "line_start": 1125, "line_end": 1180, "role": "Parses the source into a CST and applies all formatting transformations." },
+        { "file": "src/black/linegen.py", "function": "LineGenerator.visit", "line_start": 45, "line_end": 120, "role": "Walks the CST and generates Line objects by visiting each node and applying formatting rules." },
+        { "file": "src/black/lines.py", "function": "Line.is_complex_subscript", "line_start": 280, "line_end": 310, "role": "Determines formatting strategy for complex slice expressions and subscripts." },
+        { "file": "src/black/__init__.py", "function": "assert_equivalent", "line_start": 1250, "line_end": 1310, "role": "Safety check that verifies the formatted code produces an identical AST to the original." }
+      ],
+      "third_party_deps": ["click", "pathspec", "platformdirs", "tomli"],
+      "env_vars": [],
+      "explanation": "Black's formatting pipeline starts with format_file_contents() which calls format_str(). The source code is parsed into a Concrete Syntax Tree (CST) using lib2to3's parser, preserving whitespace and comments. LineGenerator walks the CST and produces Line objects — intermediate representations of formatted code lines. Each Line contains Leaf nodes with their formatting decisions. After all transformations (line splitting, string normalization, trailing comma handling), the Lines are rendered back to source code. Finally, assert_equivalent() parses both the original and formatted code into ASTs and compares them to guarantee semantic equivalence.",
+      "candidate_files": ["src/black/__init__.py", "src/black/linegen.py", "src/black/lines.py", "src/black/parsing.py", "src/black/mode.py"],
+      "graph_edges": [
+        ["src/black/__init__.py:format_file_contents", "src/black/__init__.py:format_str"],
+        ["src/black/__init__.py:format_str", "src/black/linegen.py:LineGenerator.visit"],
+        ["src/black/__init__.py:format_file_contents", "src/black/__init__.py:assert_equivalent"]
+      ]
+    },
+    "line_splitting": {
+      "entry_point": { "file": "src/black/linegen.py", "function": "right_hand_split" },
+      "call_chain": [
+        { "file": "src/black/linegen.py", "function": "right_hand_split", "line_start": 320, "line_end": 410, "role": "Primary splitting strategy that splits from the right side of an expression, maximizing content on the first line." },
+        { "file": "src/black/linegen.py", "function": "left_hand_split", "line_start": 230, "line_end": 318, "role": "Alternative strategy that splits after the opening delimiter for function definitions and calls." },
+        { "file": "src/black/linegen.py", "function": "bracket_split_build_line", "line_start": 415, "line_end": 480, "role": "Builds new Line objects from split results, handling indentation and trailing comma insertion." },
+        { "file": "src/black/lines.py", "function": "Line.should_split_rhs", "line_start": 320, "line_end": 350, "role": "Heuristic that determines whether right-hand splitting would produce better output." }
+      ],
+      "third_party_deps": [],
+      "env_vars": [],
+      "explanation": "Line splitting uses two strategies. right_hand_split() finds the rightmost bracket pair and splits the line so the closing bracket starts a new line — this maximizes the amount of code on the first line. left_hand_split() splits after the opening bracket, used primarily for function signatures. The choice between strategies depends on Line.should_split_rhs() heuristics. After splitting, bracket_split_build_line() constructs new Line objects with proper indentation. If a split doesn't reduce the line length, Black tries the other strategy, ensuring the shortest vertical output.",
+      "candidate_files": ["src/black/linegen.py", "src/black/lines.py", "src/black/brackets.py"],
+      "graph_edges": [
+        ["src/black/linegen.py:right_hand_split", "src/black/linegen.py:bracket_split_build_line"],
+        ["src/black/linegen.py:left_hand_split", "src/black/linegen.py:bracket_split_build_line"],
+        ["src/black/lines.py:Line.should_split_rhs", "src/black/linegen.py:right_hand_split"]
+      ]
+    }
+  }
+}
