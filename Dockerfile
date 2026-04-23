@@ -22,4 +22,4 @@ COPY --from=frontend-build /app/frontend/dist ./static
 
 ENV PORT=8000
 EXPOSE ${PORT}
-CMD uvicorn main:app --host 0.0.0.0 --port $PORT
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]
