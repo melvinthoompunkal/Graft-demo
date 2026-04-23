@@ -1,0 +1,122 @@
+[
+  {
+    "slug": "requests",
+    "name": "requests",
+    "owner": "psf",
+    "description": "A simple, yet elegant, HTTP library for Python.",
+    "github_url": "https://github.com/psf/requests",
+    "stars": "52.3k",
+    "language": "Python",
+    "file_count": 89,
+    "feature_count": 6,
+    "languages_detected": ["Python"]
+  },
+  {
+    "slug": "flask",
+    "name": "flask",
+    "owner": "pallets",
+    "description": "The Python micro framework for building web applications.",
+    "github_url": "https://github.com/pallets/flask",
+    "stars": "68.5k",
+    "language": "Python",
+    "file_count": 72,
+    "feature_count": 7,
+    "languages_detected": ["Python"]
+  },
+  {
+    "slug": "fastapi",
+    "name": "fastapi",
+    "owner": "fastapi",
+    "description": "Modern, fast web framework for building APIs with Python based on standard type hints.",
+    "github_url": "https://github.com/fastapi/fastapi",
+    "stars": "79.2k",
+    "language": "Python",
+    "file_count": 134,
+    "feature_count": 8,
+    "languages_detected": ["Python"]
+  },
+  {
+    "slug": "httpx",
+    "name": "httpx",
+    "owner": "encode",
+    "description": "A next-generation HTTP client for Python with async support.",
+    "github_url": "https://github.com/encode/httpx",
+    "stars": "13.8k",
+    "language": "Python",
+    "file_count": 67,
+    "feature_count": 6,
+    "languages_detected": ["Python"]
+  },
+  {
+    "slug": "rich",
+    "name": "rich",
+    "owner": "Textualize",
+    "description": "Rich text and beautiful formatting in the terminal.",
+    "github_url": "https://github.com/Textualize/rich",
+    "stars": "50.1k",
+    "language": "Python",
+    "file_count": 108,
+    "feature_count": 7,
+    "languages_detected": ["Python"]
+  },
+  {
+    "slug": "pydantic",
+    "name": "pydantic",
+    "owner": "pydantic",
+    "description": "Data validation using Python type annotations.",
+    "github_url": "https://github.com/pydantic/pydantic",
+    "stars": "21.6k",
+    "language": "Python",
+    "file_count": 156,
+    "feature_count": 7,
+    "languages_detected": ["Python"]
+  },
+  {
+    "slug": "black",
+    "name": "black",
+    "owner": "psf",
+    "description": "The uncompromising Python code formatter.",
+    "github_url": "https://github.com/psf/black",
+    "stars": "39.4k",
+    "language": "Python",
+    "file_count": 94,
+    "feature_count": 5,
+    "languages_detected": ["Python"]
+  },
+  {
+    "slug": "click",
+    "name": "click",
+    "owner": "pallets",
+    "description": "Python composable command line interface toolkit.",
+    "github_url": "https://github.com/pallets/click",
+    "stars": "15.9k",
+    "language": "Python",
+    "file_count": 42,
+    "feature_count": 6,
+    "languages_detected": ["Python"]
+  },
+  {
+    "slug": "typer",
+    "name": "typer",
+    "owner": "fastapi",
+    "description": "Build great CLIs. Easy to code. Based on Python type hints.",
+    "github_url": "https://github.com/fastapi/typer",
+    "stars": "16.4k",
+    "language": "Python",
+    "file_count": 38,
+    "feature_count": 5,
+    "languages_detected": ["Python"]
+  },
+  {
+    "slug": "textual",
+    "name": "textual",
+    "owner": "Textualize",
+    "description": "The lean application framework for Python. Build sophisticated UIs with a simple API.",
+    "github_url": "https://github.com/Textualize/textual",
+    "stars": "26.3k",
+    "language": "Python",
+    "file_count": 312,
+    "feature_count": 8,
+    "languages_detected": ["Python", "CSS"]
+  }
+]

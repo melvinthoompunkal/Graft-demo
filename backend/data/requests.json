@@ -1,0 +1,100 @@
+{
+  "repo_name": "requests",
+  "repo_owner": "psf",
+  "github_url": "https://github.com/psf/requests",
+  "file_count": 89,
+  "languages_detected": ["Python"],
+  "features": [
+    {
+      "slug": "http_sessions",
+      "name": "HTTP Sessions",
+      "description": "Persistent connection pooling and cookie persistence across requests using the Session object."
+    },
+    {
+      "slug": "authentication",
+      "name": "Authentication",
+      "description": "Pluggable authentication handlers including Basic, Digest, and custom auth flows."
+    },
+    {
+      "slug": "ssl_verification",
+      "name": "SSL/TLS Verification",
+      "description": "Certificate verification and custom CA bundle support for secure HTTPS connections."
+    },
+    {
+      "slug": "response_hooks",
+      "name": "Response Hooks",
+      "description": "Event hook system allowing callbacks to be attached to response lifecycle events."
+    },
+    {
+      "slug": "prepared_requests",
+      "name": "Prepared Requests",
+      "description": "Pre-build request objects for fine-grained control over headers, body, and transport settings."
+    },
+    {
+      "slug": "content_decoding",
+      "name": "Content Decoding",
+      "description": "Automatic detection and decoding of response content encoding including gzip, deflate, and brotli."
+    }
+  ],
+  "traces": {
+    "http_sessions": {
+      "entry_point": { "file": "src/requests/sessions.py", "function": "Session.request" },
+      "call_chain": [
+        { "file": "src/requests/sessions.py", "function": "Session.request", "line_start": 466, "line_end": 591, "role": "Central dispatch method that merges environment settings, prepares the request, and sends it through the transport adapter." },
+        { "file": "src/requests/sessions.py", "function": "Session.prepare_request", "line_start": 359, "line_end": 464, "role": "Merges session-level settings (cookies, headers, auth) into a PreparedRequest object." },
+        { "file": "src/requests/models.py", "function": "PreparedRequest.prepare", "line_start": 295, "line_end": 371, "role": "Prepares all components of the request: method, URL, headers, cookies, body, and auth." },
+        { "file": "src/requests/sessions.py", "function": "Session.send", "line_start": 593, "line_end": 697, "role": "Sends the PreparedRequest through the appropriate transport adapter and handles redirects." },
+        { "file": "src/requests/adapters.py", "function": "HTTPAdapter.send", "line_start": 440, "line_end": 563, "role": "Interfaces with urllib3 to perform the actual HTTP connection, manages retries, timeouts, and connection pooling." },
+        { "file": "src/requests/cookies.py", "function": "extract_cookies_to_jar", "line_start": 125, "line_end": 148, "role": "Extracts Set-Cookie headers from the response and merges them into the session cookie jar for persistence." }
+      ],
+      "third_party_deps": ["urllib3", "certifi", "charset_normalizer", "idna"],
+      "env_vars": ["REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE"],
+      "explanation": "HTTP Sessions work through the Session class which maintains a persistent state across requests. When Session.request() is called, it first merges session-level settings (cookies, headers, auth) into a PreparedRequest via prepare_request(). The PreparedRequest.prepare() method normalizes all request components. Session.send() then dispatches the prepared request through an HTTPAdapter, which manages connection pooling via urllib3's PoolManager. After each response, cookies are extracted from Set-Cookie headers and merged back into the session's cookie jar, enabling stateful browsing across multiple requests.",
+      "candidate_files": ["src/requests/sessions.py", "src/requests/models.py", "src/requests/adapters.py", "src/requests/cookies.py", "src/requests/auth.py", "src/requests/utils.py"],
+      "graph_edges": [
+        ["src/requests/sessions.py:Session.request", "src/requests/sessions.py:Session.prepare_request"],
+        ["src/requests/sessions.py:Session.prepare_request", "src/requests/models.py:PreparedRequest.prepare"],
+        ["src/requests/sessions.py:Session.request", "src/requests/sessions.py:Session.send"],
+        ["src/requests/sessions.py:Session.send", "src/requests/adapters.py:HTTPAdapter.send"],
+        ["src/requests/sessions.py:Session.send", "src/requests/cookies.py:extract_cookies_to_jar"]
+      ]
+    },
+    "authentication": {
+      "entry_point": { "file": "src/requests/auth.py", "function": "HTTPBasicAuth.__call__" },
+      "call_chain": [
+        { "file": "src/requests/auth.py", "function": "HTTPBasicAuth.__call__", "line_start": 48, "line_end": 61, "role": "Attaches Basic auth credentials to the request by encoding username:password as Base64 in the Authorization header." },
+        { "file": "src/requests/auth.py", "function": "HTTPDigestAuth.__call__", "line_start": 63, "line_end": 95, "role": "Initiates digest auth by registering a response hook that will handle the 401 challenge-response flow." },
+        { "file": "src/requests/auth.py", "function": "HTTPDigestAuth.handle_401", "line_start": 97, "line_end": 166, "role": "Parses the WWW-Authenticate header, computes the digest hash, and retries the request with proper credentials." },
+        { "file": "src/requests/utils.py", "function": "get_netrc_auth", "line_start": 183, "line_end": 218, "role": "Falls back to reading credentials from the user's .netrc file when no explicit auth is provided." },
+        { "file": "src/requests/sessions.py", "function": "Session.request", "line_start": 466, "line_end": 591, "role": "Invokes the auth callable during request preparation, passing the PreparedRequest for credential injection." }
+      ],
+      "third_party_deps": ["urllib3"],
+      "env_vars": ["NETRC"],
+      "explanation": "Authentication in requests follows a callable protocol. Auth handlers like HTTPBasicAuth implement __call__(self, r) which receives a PreparedRequest and modifies its headers. Basic auth simply Base64-encodes credentials into the Authorization header. Digest auth is more complex: it registers a response hook via handle_401() that intercepts 401 responses, parses the WWW-Authenticate challenge, computes the appropriate hash, and retries the request. When no explicit auth is provided, the library falls back to get_netrc_auth() which reads credentials from the system's .netrc file.",
+      "candidate_files": ["src/requests/auth.py", "src/requests/sessions.py", "src/requests/models.py", "src/requests/utils.py"],
+      "graph_edges": [
+        ["src/requests/sessions.py:Session.request", "src/requests/auth.py:HTTPBasicAuth.__call__"],
+        ["src/requests/auth.py:HTTPDigestAuth.__call__", "src/requests/auth.py:HTTPDigestAuth.handle_401"],
+        ["src/requests/sessions.py:Session.request", "src/requests/utils.py:get_netrc_auth"]
+      ]
+    },
+    "ssl_verification": {
+      "entry_point": { "file": "src/requests/adapters.py", "function": "HTTPAdapter.cert_verify" },
+      "call_chain": [
+        { "file": "src/requests/adapters.py", "function": "HTTPAdapter.cert_verify", "line_start": 220, "line_end": 268, "role": "Validates SSL certificate settings and configures the urllib3 connection with the appropriate CA bundle or client certificate." },
+        { "file": "src/requests/adapters.py", "function": "HTTPAdapter.send", "line_start": 440, "line_end": 563, "role": "Calls cert_verify() before establishing the connection to ensure TLS parameters are properly configured." },
+        { "file": "src/requests/utils.py", "function": "DEFAULT_CA_BUNDLE_PATH", "line_start": 45, "line_end": 48, "role": "Resolves the default CA bundle path from certifi or environment variables." },
+        { "file": "src/requests/sessions.py", "function": "Session.merge_environment_settings", "line_start": 700, "line_end": 738, "role": "Merges verify and cert settings from environment variables and session defaults." }
+      ],
+      "third_party_deps": ["urllib3", "certifi"],
+      "env_vars": ["REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE"],
+      "explanation": "SSL verification starts in Session.merge_environment_settings() which resolves the verify parameter from session defaults, method arguments, and environment variables (REQUESTS_CA_BUNDLE, CURL_CA_BUNDLE). When HTTPAdapter.send() is called, it invokes cert_verify() which configures the urllib3 connection pool's SSL context. If verify=True, it uses certifi's CA bundle by default. If a custom path is provided, it validates the file/directory exists. Client certificates are also configured here for mutual TLS authentication.",
+      "candidate_files": ["src/requests/adapters.py", "src/requests/sessions.py", "src/requests/utils.py", "src/requests/certs.py"],
+      "graph_edges": [
+        ["src/requests/sessions.py:Session.send", "src/requests/adapters.py:HTTPAdapter.send"],
+        ["src/requests/adapters.py:HTTPAdapter.send", "src/requests/adapters.py:HTTPAdapter.cert_verify"],
+        ["src/requests/sessions.py:Session.request", "src/requests/sessions.py:Session.merge_environment_settings"]
+      ]
+    }
+  }
+}
