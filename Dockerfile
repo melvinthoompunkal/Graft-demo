@@ -21,7 +21,5 @@ COPY backend/ .
 COPY --from=frontend-build /app/frontend/dist ./static
 
 ENV PORT=8000
-EXPOSE ${PORT}
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-CMD ["/entrypoint.sh"]
+EXPOSE 8000
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
