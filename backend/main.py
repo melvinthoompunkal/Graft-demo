@@ -79,9 +79,7 @@ app.include_router(demo_router)
 
 if static_dir.exists():
     app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="frontend")
-
-if __name__ == "__main__":
-    import os
-    import uvicorn
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
+else:
+    @app.get("/")
+    def health():
+        return {"status": "ok"}
