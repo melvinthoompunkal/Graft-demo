@@ -36,6 +36,29 @@ async def get_repo(slug: str) -> dict:
         raise HTTPException(status_code=404, detail=f"Repository '{slug}' not found in demo library.")
 
 
+@router.get("/repos/{slug}/download")
+async def download_repo(slug: str):
+    """Download the full analysis JSON as a file attachment."""
+    filepath = DATA_DIR / f"{slug}.json"
+    if not filepath.exists():
+        raise HTTPException(status_code=404, detail=f"Repository '{slug}' not found in demo library.")
+
+    from fastapi.responses import FileResponse
+    return FileResponse(
+        path=str(filepath),
+        media_type="application/json",
+        filename=f"{slug}_analysis.json",
+        headers={"Content-Disposition": f'attachment; filename="{slug}_analysis.json"'},
+    )
+
+
+@router.get("/bundles")
+async def list_bundles() -> list[dict]:
+    """Return only the bundle entries from the library."""
+    all_repos = _load_json("_index.json")
+    return [r for r in all_repos if r.get("category") == "bundle"]
+
+
 @router.get("/quota")
 async def get_quota(request: Request) -> dict:
     """Return the remaining rate limit for the caller's IP."""

@@ -6,6 +6,7 @@ import LandingPage from "./pages/LandingPage.jsx";
 import LibraryPage from "./pages/LibraryPage.jsx";
 import RepoDetail from "./pages/RepoDetail.jsx";
 import TryYourOwn from "./pages/TryYourOwn.jsx";
+import BundlesPage from "./pages/BundlesPage.jsx";
 
 function useHashRouter() {
   const [route, setRoute] = useState(window.location.hash || "#/");
@@ -38,6 +39,9 @@ export default function App() {
     if (route.startsWith("#/repo/")) {
       const slug = route.replace("#/repo/", "");
       return <RepoDetail apiBase={apiBase} slug={slug} onNavigate={navigate} />;
+    }
+    if (route === "#/bundles") {
+      return <BundlesPage apiBase={apiBase} onNavigate={navigate} />;
     }
     if (route === "#/try") {
       return <TryYourOwn apiBase={apiBase} onNavigate={navigate} />;

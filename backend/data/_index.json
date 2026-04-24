@@ -118,5 +118,44 @@
     "file_count": 312,
     "feature_count": 8,
     "languages_detected": ["Python", "CSS"]
+  },
+  {
+    "slug": "openbb_charting",
+    "name": "OpenBB Charting",
+    "owner": "OpenBB-finance",
+    "description": "Deep dive into OpenBB's charting pipeline — data fetching → transformation → Plotly rendering via PyWry.",
+    "github_url": "https://github.com/OpenBB-finance/OpenBBTerminal",
+    "stars": "34.2k",
+    "language": "Python",
+    "file_count": 847,
+    "feature_count": 5,
+    "languages_detected": ["Python", "TypeScript", "JavaScript"],
+    "category": "bundle"
+  },
+  {
+    "slug": "openclaw_telegram",
+    "name": "OpenClaw Telegram Bot",
+    "owner": "openclaw",
+    "description": "Agentic AI desktop tool's Telegram bot — message handling, agent dispatch, and response delivery.",
+    "github_url": "https://github.com/openclaw/openclaw",
+    "stars": "8.7k",
+    "language": "Python",
+    "file_count": 234,
+    "feature_count": 5,
+    "languages_detected": ["Python", "TypeScript"],
+    "category": "bundle"
+  },
+  {
+    "slug": "mirofish_subagent",
+    "name": "Mirofish Sub-Agents",
+    "owner": "mirofish",
+    "description": "Sub-agent orchestration framework — task decomposition, parallel agent spawning, and result aggregation.",
+    "github_url": "https://github.com/mirofish/mirofish",
+    "stars": "5.2k",
+    "language": "Python",
+    "file_count": 189,
+    "feature_count": 5,
+    "languages_detected": ["Python"],
+    "category": "bundle"
   }
 ]

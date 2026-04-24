@@ -1,0 +1,98 @@
+{
+  "repo_name": "OpenBBTerminal",
+  "repo_owner": "OpenBB-finance",
+  "github_url": "https://github.com/OpenBB-finance/OpenBBTerminal",
+  "file_count": 847,
+  "languages_detected": ["Python", "TypeScript", "JavaScript"],
+  "category": "bundle",
+  "bundle_description": "Deep dive into OpenBB's charting pipeline — from raw financial data fetching through transformation, indicator computation, and final Plotly rendering via PyWry.",
+  "features": [
+    {
+      "slug": "chart_rendering_pipeline",
+      "name": "Chart Rendering Pipeline",
+      "description": "End-to-end pipeline that transforms fetched financial data into interactive Plotly charts rendered through PyWry or browser backends."
+    },
+    {
+      "slug": "plotly_ta_indicators",
+      "name": "PlotlyTA Indicator Overlay",
+      "description": "Technical analysis indicator computation and overlay system using PlotlyTA to add moving averages, RSI, MACD, and custom indicators to charts."
+    },
+    {
+      "slug": "chart_style_theming",
+      "name": "Chart Style & Theming",
+      "description": "Dynamic theming engine that applies consistent color palettes, fonts, and layout configurations across all chart types."
+    },
+    {
+      "slug": "data_normalization",
+      "name": "Data Normalization Layer",
+      "description": "Standardizes heterogeneous data from multiple providers (yFinance, Polygon, Alpha Vantage) into a unified OBBject format for charting."
+    },
+    {
+      "slug": "chart_export",
+      "name": "Chart Export System",
+      "description": "Multi-format export supporting PNG, SVG, HTML, and interactive standalone files with embedded data."
+    }
+  ],
+  "traces": {
+    "chart_rendering_pipeline": {
+      "entry_point": { "file": "openbb_charting/core/openbb_figure.py", "function": "OpenBBFigure.to_chart" },
+      "call_chain": [
+        { "file": "openbb_charting/core/openbb_figure.py", "function": "OpenBBFigure.to_chart", "line_start": 112, "line_end": 185, "role": "Primary entry point that receives an OBBject result, determines chart type, and orchestrates the full rendering pipeline." },
+        { "file": "openbb_charting/core/openbb_figure.py", "function": "OpenBBFigure.create_subplots", "line_start": 67, "line_end": 110, "role": "Constructs the Plotly subplot grid layout based on the number of indicators and secondary y-axes required." },
+        { "file": "openbb_charting/charting_router.py", "function": "ChartingRouter._get_chart_function", "line_start": 45, "line_end": 92, "role": "Routes the OBBject command path (e.g., 'equity.price.historical') to the correct charting function via a registry lookup." },
+        { "file": "openbb_charting/charts/price_historical.py", "function": "price_historical", "line_start": 18, "line_end": 105, "role": "Specific charting function for OHLCV candlestick data — builds traces, adds volume bars, and configures range slider." },
+        { "file": "openbb_charting/core/openbb_figure.py", "function": "OpenBBFigure._apply_layout", "line_start": 190, "line_end": 240, "role": "Applies final layout configuration including margins, legend position, axis formatting, and responsive breakpoints." },
+        { "file": "openbb_charting/core/backend.py", "function": "Backend.send_figure", "line_start": 88, "line_end": 135, "role": "Dispatches the completed figure to the selected rendering backend (PyWry desktop window or browser tab)." }
+      ],
+      "third_party_deps": ["plotly", "pywry", "pandas", "numpy"],
+      "env_vars": ["OPENBB_CHARTING_BACKEND", "OPENBB_CHART_STYLE"],
+      "explanation": "The chart rendering pipeline begins when user code calls to_chart() on an OBBject result. This method inspects the command path that produced the data (e.g., 'equity.price.historical') and uses ChartingRouter to look up the appropriate charting function. The router maintains a registry mapping command paths to specialized chart builders. For price data, price_historical() constructs candlestick traces with volume bars. The figure is built on OpenBBFigure (a Plotly Figure subclass) which adds create_subplots() for multi-panel layouts. After traces are added, _apply_layout() configures axis labels, margins, and theme colors. Finally, Backend.send_figure() dispatches the rendered chart to either a PyWry native window (default desktop experience) or a browser tab.",
+      "candidate_files": ["openbb_charting/core/openbb_figure.py", "openbb_charting/charting_router.py", "openbb_charting/charts/price_historical.py", "openbb_charting/core/backend.py"],
+      "graph_edges": [
+        ["openbb_charting/core/openbb_figure.py:OpenBBFigure.to_chart", "openbb_charting/charting_router.py:ChartingRouter._get_chart_function"],
+        ["openbb_charting/charting_router.py:ChartingRouter._get_chart_function", "openbb_charting/charts/price_historical.py:price_historical"],
+        ["openbb_charting/charts/price_historical.py:price_historical", "openbb_charting/core/openbb_figure.py:OpenBBFigure.create_subplots"],
+        ["openbb_charting/core/openbb_figure.py:OpenBBFigure.create_subplots", "openbb_charting/core/openbb_figure.py:OpenBBFigure._apply_layout"],
+        ["openbb_charting/core/openbb_figure.py:OpenBBFigure._apply_layout", "openbb_charting/core/backend.py:Backend.send_figure"]
+      ]
+    },
+    "plotly_ta_indicators": {
+      "entry_point": { "file": "openbb_charting/core/plotly_ta/ta_class.py", "function": "PlotlyTA.plot" },
+      "call_chain": [
+        { "file": "openbb_charting/core/plotly_ta/ta_class.py", "function": "PlotlyTA.plot", "line_start": 155, "line_end": 230, "role": "Main entry point that accepts a DataFrame and indicator configuration, iterates through requested indicators, and adds each as a trace." },
+        { "file": "openbb_charting/core/plotly_ta/ta_class.py", "function": "PlotlyTA._get_indicator", "line_start": 85, "line_end": 152, "role": "Resolves an indicator name (e.g., 'sma', 'rsi', 'macd') to the corresponding computation and trace-building method." },
+        { "file": "openbb_charting/core/plotly_ta/data_processing.py", "function": "calculate_indicator", "line_start": 22, "line_end": 78, "role": "Performs the actual pandas-based computation for a given technical indicator using configurable window sizes and parameters." },
+        { "file": "openbb_charting/core/plotly_ta/overlap_studies.py", "function": "plot_ma", "line_start": 15, "line_end": 55, "role": "Builds Plotly trace objects for moving average overlays (SMA, EMA, WMA) with configurable line styles and colors." },
+        { "file": "openbb_charting/core/plotly_ta/ta_class.py", "function": "PlotlyTA._add_to_subplot", "line_start": 235, "line_end": 280, "role": "Places computed indicator traces onto the correct subplot row, handling secondary y-axes for oscillators like RSI." }
+      ],
+      "third_party_deps": ["plotly", "pandas", "pandas-ta"],
+      "env_vars": [],
+      "explanation": "PlotlyTA is the technical analysis overlay engine. When plot() is called with a DataFrame and a list of desired indicators, it iterates through each one. For each indicator, _get_indicator() resolves the name to a handler — e.g., 'sma' maps to overlap_studies.plot_ma(). The handler first calls calculate_indicator() which uses pandas operations (or pandas-ta if available) to compute the values (e.g., a 20-period simple moving average). The computed Series is then transformed into a Plotly Scatter trace with appropriate styling. Finally, _add_to_subplot() places the trace on the correct subplot — overlays like moving averages go on the main price panel (row 1), while oscillators like RSI get their own dedicated subplot row.",
+      "candidate_files": ["openbb_charting/core/plotly_ta/ta_class.py", "openbb_charting/core/plotly_ta/data_processing.py", "openbb_charting/core/plotly_ta/overlap_studies.py"],
+      "graph_edges": [
+        ["openbb_charting/core/plotly_ta/ta_class.py:PlotlyTA.plot", "openbb_charting/core/plotly_ta/ta_class.py:PlotlyTA._get_indicator"],
+        ["openbb_charting/core/plotly_ta/ta_class.py:PlotlyTA._get_indicator", "openbb_charting/core/plotly_ta/data_processing.py:calculate_indicator"],
+        ["openbb_charting/core/plotly_ta/data_processing.py:calculate_indicator", "openbb_charting/core/plotly_ta/overlap_studies.py:plot_ma"],
+        ["openbb_charting/core/plotly_ta/overlap_studies.py:plot_ma", "openbb_charting/core/plotly_ta/ta_class.py:PlotlyTA._add_to_subplot"]
+      ]
+    },
+    "chart_style_theming": {
+      "entry_point": { "file": "openbb_charting/core/chart_style.py", "function": "ChartStyle.apply" },
+      "call_chain": [
+        { "file": "openbb_charting/core/chart_style.py", "function": "ChartStyle.apply", "line_start": 42, "line_end": 95, "role": "Applies a named style preset (e.g., 'dark', 'light', 'bloomberg') to the Plotly figure's layout and trace defaults." },
+        { "file": "openbb_charting/core/chart_style.py", "function": "ChartStyle._load_theme", "line_start": 18, "line_end": 40, "role": "Loads a theme definition from a JSON file in the styles/ directory, parsing color palettes, font stacks, and grid settings." },
+        { "file": "openbb_charting/core/chart_style.py", "function": "ChartStyle._apply_colors", "line_start": 98, "line_end": 130, "role": "Maps theme color tokens (background, gridline, text, up/down candle colors) to Plotly layout properties." },
+        { "file": "openbb_charting/core/chart_style.py", "function": "ChartStyle._apply_fonts", "line_start": 133, "line_end": 160, "role": "Sets font family, sizes, and weights for title, axis labels, legend, and hover text from the theme definition." }
+      ],
+      "third_party_deps": ["plotly"],
+      "env_vars": ["OPENBB_CHART_STYLE"],
+      "explanation": "The theming system uses a preset-based approach. ChartStyle.apply() is called with a style name (defaulting to the OPENBB_CHART_STYLE env var or 'dark'). It calls _load_theme() which reads a JSON definition file from the styles/ directory. This JSON contains color palettes (background, gridlines, up/down candle colors, trace color cycle), font configurations, and layout tweaks. The apply method then delegates to _apply_colors() and _apply_fonts() which translate these tokens into Plotly's template system, modifying layout.template.layout for global defaults and layout.template.data for trace-level defaults like scatter line colors and bar fill colors.",
+      "candidate_files": ["openbb_charting/core/chart_style.py", "openbb_charting/styles/dark.json", "openbb_charting/styles/light.json"],
+      "graph_edges": [
+        ["openbb_charting/core/chart_style.py:ChartStyle.apply", "openbb_charting/core/chart_style.py:ChartStyle._load_theme"],
+        ["openbb_charting/core/chart_style.py:ChartStyle.apply", "openbb_charting/core/chart_style.py:ChartStyle._apply_colors"],
+        ["openbb_charting/core/chart_style.py:ChartStyle.apply", "openbb_charting/core/chart_style.py:ChartStyle._apply_fonts"]
+      ]
+    }
+  }
+}

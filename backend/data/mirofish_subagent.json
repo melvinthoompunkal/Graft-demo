@@ -1,0 +1,98 @@
+{
+  "repo_name": "mirofish",
+  "repo_owner": "mirofish",
+  "github_url": "https://github.com/mirofish/mirofish",
+  "file_count": 189,
+  "languages_detected": ["Python"],
+  "category": "bundle",
+  "bundle_description": "How Mirofish spawns and coordinates sub-agents — from task decomposition through parallel execution to result aggregation.",
+  "features": [
+    {
+      "slug": "root_orchestration",
+      "name": "Root Agent Orchestration",
+      "description": "Top-level orchestrator that receives a complex task, decomposes it into subtasks, and manages the lifecycle of sub-agents."
+    },
+    {
+      "slug": "sub_agent_spawning",
+      "name": "Sub-Agent Spawning",
+      "description": "Dynamic agent pool that instantiates specialized sub-agents with isolated contexts, tool sets, and system prompts."
+    },
+    {
+      "slug": "task_decomposition",
+      "name": "Task Decomposition",
+      "description": "LLM-powered task planner that breaks complex goals into a dependency-aware DAG of atomic subtasks."
+    },
+    {
+      "slug": "result_aggregation",
+      "name": "Result Aggregation",
+      "description": "Collects outputs from completed sub-agents, resolves conflicts, merges partial results, and synthesizes a final answer."
+    },
+    {
+      "slug": "error_recovery",
+      "name": "Error Recovery & Retry",
+      "description": "Handles sub-agent failures with configurable retry policies, fallback agents, and partial-result salvage strategies."
+    }
+  ],
+  "traces": {
+    "root_orchestration": {
+      "entry_point": { "file": "mirofish/orchestrator/root_agent.py", "function": "RootAgent.orchestrate" },
+      "call_chain": [
+        { "file": "mirofish/orchestrator/root_agent.py", "function": "RootAgent.orchestrate", "line_start": 42, "line_end": 120, "role": "Main entry point that accepts a user goal, runs task decomposition, spawns sub-agents, waits for results, and aggregates the final answer." },
+        { "file": "mirofish/orchestrator/root_agent.py", "function": "RootAgent._plan_execution", "line_start": 125, "line_end": 168, "role": "Analyzes the task graph to determine execution order, identifying which subtasks can run in parallel and which have dependencies." },
+        { "file": "mirofish/orchestrator/root_agent.py", "function": "RootAgent._dispatch_wave", "line_start": 172, "line_end": 215, "role": "Dispatches a batch of independent subtasks concurrently using asyncio.gather, collecting results as they complete." },
+        { "file": "mirofish/orchestrator/root_agent.py", "function": "RootAgent._check_completion", "line_start": 220, "line_end": 255, "role": "After each wave completes, checks if all subtasks are done or if there are remaining tasks whose dependencies are now satisfied." },
+        { "file": "mirofish/orchestrator/root_agent.py", "function": "RootAgent._synthesize_answer", "line_start": 260, "line_end": 310, "role": "Takes all sub-agent results and produces a coherent final answer by calling the LLM with a synthesis prompt." }
+      ],
+      "third_party_deps": ["anthropic", "asyncio", "networkx"],
+      "env_vars": ["MIROFISH_LLM_MODEL", "MIROFISH_MAX_CONCURRENT_AGENTS"],
+      "explanation": "The root orchestrator implements a wave-based execution model. orchestrate() first calls TaskGraph.decompose() to break the user's goal into subtasks with dependency edges. Then _plan_execution() performs a topological sort on the task DAG to identify execution waves — groups of tasks with no unmet dependencies. _dispatch_wave() launches all tasks in the current wave concurrently using asyncio.gather(), with each task handled by a spawned sub-agent. After each wave, _check_completion() verifies results and unlocks the next wave of dependent tasks. This continues until all tasks complete. Finally, _synthesize_answer() sends all sub-agent outputs to the LLM to produce a single coherent response.",
+      "candidate_files": ["mirofish/orchestrator/root_agent.py", "mirofish/orchestrator/task_graph.py", "mirofish/agents/sub_agent_pool.py"],
+      "graph_edges": [
+        ["mirofish/orchestrator/root_agent.py:RootAgent.orchestrate", "mirofish/orchestrator/root_agent.py:RootAgent._plan_execution"],
+        ["mirofish/orchestrator/root_agent.py:RootAgent._plan_execution", "mirofish/orchestrator/root_agent.py:RootAgent._dispatch_wave"],
+        ["mirofish/orchestrator/root_agent.py:RootAgent._dispatch_wave", "mirofish/orchestrator/root_agent.py:RootAgent._check_completion"],
+        ["mirofish/orchestrator/root_agent.py:RootAgent._check_completion", "mirofish/orchestrator/root_agent.py:RootAgent._synthesize_answer"]
+      ]
+    },
+    "sub_agent_spawning": {
+      "entry_point": { "file": "mirofish/agents/sub_agent_pool.py", "function": "SubAgentPool.spawn" },
+      "call_chain": [
+        { "file": "mirofish/agents/sub_agent_pool.py", "function": "SubAgentPool.spawn", "line_start": 35, "line_end": 88, "role": "Creates a new sub-agent instance with an isolated execution context, assigns tools and system prompt based on the subtask type." },
+        { "file": "mirofish/agents/sub_agent_pool.py", "function": "SubAgentPool._select_profile", "line_start": 92, "line_end": 125, "role": "Chooses the agent profile (researcher, coder, analyst, writer) based on the subtask's classified type and required capabilities." },
+        { "file": "mirofish/agents/agent.py", "function": "SubAgent.__init__", "line_start": 18, "line_end": 52, "role": "Initializes the sub-agent with its profile's system prompt, tool registry, context window budget, and execution timeout." },
+        { "file": "mirofish/agents/agent.py", "function": "SubAgent.execute", "line_start": 55, "line_end": 130, "role": "Runs the sub-agent's ReAct loop for its assigned subtask — prompt construction, LLM call, tool use, iterating until completion." },
+        { "file": "mirofish/agents/context.py", "function": "AgentContext.create_isolated", "line_start": 12, "line_end": 45, "role": "Creates a sandboxed context with its own memory, tool results, and token budget that doesn't leak into other agents." }
+      ],
+      "third_party_deps": ["anthropic", "pydantic"],
+      "env_vars": ["MIROFISH_AGENT_TIMEOUT", "MIROFISH_AGENT_MAX_ITERATIONS"],
+      "explanation": "Sub-agent spawning follows a profile-based architecture. When SubAgentPool.spawn() is called with a subtask, _select_profile() classifies the task and selects an appropriate agent profile — 'researcher' for information gathering, 'coder' for code generation, 'analyst' for data analysis, etc. Each profile defines a system prompt, a set of available tools, and resource limits. AgentContext.create_isolated() builds a sandboxed execution environment so sub-agents can't see each other's intermediate results. SubAgent.__init__() wires everything together, and SubAgent.execute() runs the actual ReAct loop — constructing prompts, calling the LLM, parsing tool use, and iterating until the subtask is complete or the timeout is reached.",
+      "candidate_files": ["mirofish/agents/sub_agent_pool.py", "mirofish/agents/agent.py", "mirofish/agents/context.py", "mirofish/agents/profiles/"],
+      "graph_edges": [
+        ["mirofish/agents/sub_agent_pool.py:SubAgentPool.spawn", "mirofish/agents/sub_agent_pool.py:SubAgentPool._select_profile"],
+        ["mirofish/agents/sub_agent_pool.py:SubAgentPool.spawn", "mirofish/agents/context.py:AgentContext.create_isolated"],
+        ["mirofish/agents/sub_agent_pool.py:SubAgentPool.spawn", "mirofish/agents/agent.py:SubAgent.__init__"],
+        ["mirofish/agents/agent.py:SubAgent.__init__", "mirofish/agents/agent.py:SubAgent.execute"]
+      ]
+    },
+    "task_decomposition": {
+      "entry_point": { "file": "mirofish/orchestrator/task_graph.py", "function": "TaskGraph.decompose" },
+      "call_chain": [
+        { "file": "mirofish/orchestrator/task_graph.py", "function": "TaskGraph.decompose", "line_start": 28, "line_end": 85, "role": "Takes a complex user goal and calls the LLM to produce a structured list of subtasks with dependency relationships." },
+        { "file": "mirofish/orchestrator/task_graph.py", "function": "TaskGraph._parse_plan", "line_start": 88, "line_end": 130, "role": "Parses the LLM's JSON response into SubTask objects with ids, descriptions, dependency lists, and type classifications." },
+        { "file": "mirofish/orchestrator/task_graph.py", "function": "TaskGraph._build_dag", "line_start": 133, "line_end": 175, "role": "Constructs a directed acyclic graph from the subtask dependency lists, validating for cycles and unreachable nodes." },
+        { "file": "mirofish/orchestrator/task_graph.py", "function": "TaskGraph._validate", "line_start": 178, "line_end": 210, "role": "Runs validation checks on the DAG — ensures no cycles, all dependencies exist, root tasks have no dependencies, and leaf tasks produce outputs." },
+        { "file": "mirofish/orchestrator/task_graph.py", "function": "TaskGraph.get_ready_tasks", "line_start": 215, "line_end": 240, "role": "Returns all subtasks whose dependencies are fully satisfied and are ready for execution in the current wave." }
+      ],
+      "third_party_deps": ["anthropic", "networkx", "pydantic"],
+      "env_vars": ["MIROFISH_MAX_SUBTASKS", "MIROFISH_DECOMPOSITION_MODEL"],
+      "explanation": "Task decomposition uses an LLM to convert high-level goals into executable plans. decompose() sends the user's goal to the LLM with a structured prompt requesting a JSON plan with subtasks and dependencies. _parse_plan() validates and deserializes the response into SubTask objects, each with an ID, description, type (research/code/analysis/write), and a list of dependency IDs. _build_dag() constructs a networkx DiGraph from these relationships. _validate() checks for cycles (which would cause deadlocks), orphan tasks, and ensures the graph has clear entry points. get_ready_tasks() is called during execution to find which tasks can be dispatched next — those whose dependencies are all marked complete.",
+      "candidate_files": ["mirofish/orchestrator/task_graph.py", "mirofish/orchestrator/models.py"],
+      "graph_edges": [
+        ["mirofish/orchestrator/task_graph.py:TaskGraph.decompose", "mirofish/orchestrator/task_graph.py:TaskGraph._parse_plan"],
+        ["mirofish/orchestrator/task_graph.py:TaskGraph._parse_plan", "mirofish/orchestrator/task_graph.py:TaskGraph._build_dag"],
+        ["mirofish/orchestrator/task_graph.py:TaskGraph._build_dag", "mirofish/orchestrator/task_graph.py:TaskGraph._validate"],
+        ["mirofish/orchestrator/task_graph.py:TaskGraph._validate", "mirofish/orchestrator/task_graph.py:TaskGraph.get_ready_tasks"]
+      ]
+    }
+  }
+}

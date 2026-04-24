@@ -2,6 +2,7 @@ export default function Navbar({ currentRoute, onNavigate }) {
   const links = [
     { hash: "#/", label: "Home" },
     { hash: "#/library", label: "Library" },
+    { hash: "#/bundles", label: "Bundles" },
     { hash: "#/try", label: "Try Your Own" },
   ];
 

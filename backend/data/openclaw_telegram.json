@@ -1,0 +1,98 @@
+{
+  "repo_name": "openclaw",
+  "repo_owner": "openclaw",
+  "github_url": "https://github.com/openclaw/openclaw",
+  "file_count": 234,
+  "languages_detected": ["Python", "TypeScript"],
+  "category": "bundle",
+  "bundle_description": "How OpenClaw's Telegram bot integration works — from incoming messages through agent dispatch and response delivery.",
+  "features": [
+    {
+      "slug": "telegram_bot_polling",
+      "name": "Telegram Bot Polling",
+      "description": "Long-polling loop that listens for incoming Telegram updates, deserializes messages, and dispatches them to the handler pipeline."
+    },
+    {
+      "slug": "message_routing",
+      "name": "Message Routing",
+      "description": "Routes incoming messages to the appropriate handler based on command prefixes, conversation state, and message type."
+    },
+    {
+      "slug": "agent_dispatch",
+      "name": "Agent Dispatch",
+      "description": "Invokes the agentic AI core to process user queries — manages prompt construction, LLM calls, tool execution loops, and response synthesis."
+    },
+    {
+      "slug": "conversation_memory",
+      "name": "Conversation Memory",
+      "description": "Maintains per-user conversation history with sliding window context, summary compression, and persistent storage."
+    },
+    {
+      "slug": "response_formatting",
+      "name": "Response Formatting",
+      "description": "Transforms raw agent output into Telegram-compatible messages with Markdown formatting, inline keyboards, and media attachments."
+    }
+  ],
+  "traces": {
+    "telegram_bot_polling": {
+      "entry_point": { "file": "openclaw/integrations/telegram/bot.py", "function": "TelegramBot.start_polling" },
+      "call_chain": [
+        { "file": "openclaw/integrations/telegram/bot.py", "function": "TelegramBot.start_polling", "line_start": 45, "line_end": 98, "role": "Initializes the bot with API token, sets up handler registry, and enters the async polling loop." },
+        { "file": "openclaw/integrations/telegram/bot.py", "function": "TelegramBot._poll_updates", "line_start": 102, "line_end": 145, "role": "Performs a single long-poll cycle against the Telegram getUpdates API with a configurable timeout." },
+        { "file": "openclaw/integrations/telegram/bot.py", "function": "TelegramBot._process_update", "line_start": 148, "line_end": 195, "role": "Deserializes a raw Update into a structured Message, extracts chat_id/user_id, and dispatches to the router." },
+        { "file": "openclaw/integrations/telegram/handlers.py", "function": "HandlerRegistry.match", "line_start": 22, "line_end": 58, "role": "Iterates through registered handlers to find the first matching handler for the update." },
+        { "file": "openclaw/integrations/telegram/bot.py", "function": "TelegramBot._send_typing_action", "line_start": 200, "line_end": 215, "role": "Sends a typing indicator to the chat while the agent processes the query." }
+      ],
+      "third_party_deps": ["httpx", "pydantic"],
+      "env_vars": ["OPENCLAW_TELEGRAM_TOKEN", "OPENCLAW_TELEGRAM_POLL_TIMEOUT"],
+      "explanation": "The Telegram integration uses an async long-polling architecture. start_polling() enters an infinite loop calling _poll_updates(), which sends a GET request to Telegram's getUpdates endpoint. When updates arrive, _process_update() deserializes the JSON payload into a typed Message object. The message is passed to HandlerRegistry.match() which checks handlers in priority order — command handlers first, then regex-based, then a catch-all. Meanwhile, _send_typing_action() runs concurrently to show a typing indicator.",
+      "candidate_files": ["openclaw/integrations/telegram/bot.py", "openclaw/integrations/telegram/handlers.py", "openclaw/integrations/telegram/models.py"],
+      "graph_edges": [
+        ["openclaw/integrations/telegram/bot.py:TelegramBot.start_polling", "openclaw/integrations/telegram/bot.py:TelegramBot._poll_updates"],
+        ["openclaw/integrations/telegram/bot.py:TelegramBot._poll_updates", "openclaw/integrations/telegram/bot.py:TelegramBot._process_update"],
+        ["openclaw/integrations/telegram/bot.py:TelegramBot._process_update", "openclaw/integrations/telegram/handlers.py:HandlerRegistry.match"],
+        ["openclaw/integrations/telegram/bot.py:TelegramBot._process_update", "openclaw/integrations/telegram/bot.py:TelegramBot._send_typing_action"]
+      ]
+    },
+    "agent_dispatch": {
+      "entry_point": { "file": "openclaw/integrations/telegram/agent_bridge.py", "function": "AgentBridge.handle_message" },
+      "call_chain": [
+        { "file": "openclaw/integrations/telegram/agent_bridge.py", "function": "AgentBridge.handle_message", "line_start": 30, "line_end": 85, "role": "Bridge between Telegram handler and the agent core — retrieves context, constructs prompt, invokes the agent." },
+        { "file": "openclaw/core/agent_manager.py", "function": "AgentManager.invoke", "line_start": 55, "line_end": 130, "role": "Main ReAct agent loop — sends prompt to LLM, parses tool calls, executes tools, iterates until final answer." },
+        { "file": "openclaw/core/agent_manager.py", "function": "AgentManager._build_messages", "line_start": 135, "line_end": 172, "role": "Constructs the messages array from system prompt, conversation history, and current user input." },
+        { "file": "openclaw/core/tool_executor.py", "function": "ToolExecutor.run", "line_start": 18, "line_end": 65, "role": "Executes a tool call by name, validates parameters, runs the function, formats the result." },
+        { "file": "openclaw/core/agent_manager.py", "function": "AgentManager._parse_response", "line_start": 175, "line_end": 220, "role": "Parses LLM response to extract either a final answer or structured tool call requests." },
+        { "file": "openclaw/integrations/telegram/response_formatter.py", "function": "ResponseFormatter.to_telegram", "line_start": 12, "line_end": 55, "role": "Converts agent response into Telegram MarkdownV2 with code blocks, links, and inline keyboards." }
+      ],
+      "third_party_deps": ["anthropic", "openai", "httpx"],
+      "env_vars": ["OPENCLAW_LLM_PROVIDER", "OPENCLAW_MODEL", "ANTHROPIC_API_KEY"],
+      "explanation": "AgentBridge.handle_message() retrieves conversation history then calls AgentManager.invoke() which implements a ReAct-style loop. It calls _build_messages() to construct the prompt, sends it to the LLM, and _parse_response() checks for tool calls. If tools are requested, ToolExecutor.run() executes each one and appends results. The loop continues until a final text answer is produced. ResponseFormatter.to_telegram() converts the output into Telegram MarkdownV2.",
+      "candidate_files": ["openclaw/integrations/telegram/agent_bridge.py", "openclaw/core/agent_manager.py", "openclaw/core/tool_executor.py", "openclaw/integrations/telegram/response_formatter.py"],
+      "graph_edges": [
+        ["openclaw/integrations/telegram/agent_bridge.py:AgentBridge.handle_message", "openclaw/core/agent_manager.py:AgentManager.invoke"],
+        ["openclaw/core/agent_manager.py:AgentManager.invoke", "openclaw/core/agent_manager.py:AgentManager._build_messages"],
+        ["openclaw/core/agent_manager.py:AgentManager.invoke", "openclaw/core/agent_manager.py:AgentManager._parse_response"],
+        ["openclaw/core/agent_manager.py:AgentManager._parse_response", "openclaw/core/tool_executor.py:ToolExecutor.run"],
+        ["openclaw/core/agent_manager.py:AgentManager.invoke", "openclaw/integrations/telegram/response_formatter.py:ResponseFormatter.to_telegram"]
+      ]
+    },
+    "conversation_memory": {
+      "entry_point": { "file": "openclaw/memory/conversation_store.py", "function": "ConversationStore.get_context" },
+      "call_chain": [
+        { "file": "openclaw/memory/conversation_store.py", "function": "ConversationStore.get_context", "line_start": 35, "line_end": 78, "role": "Retrieves conversation history for a user, applies sliding window, checks if summary compression is needed." },
+        { "file": "openclaw/memory/conversation_store.py", "function": "ConversationStore._load_history", "line_start": 82, "line_end": 110, "role": "Loads raw conversation turns from SQLite, ordered by timestamp, with max-turns limit." },
+        { "file": "openclaw/memory/summarizer.py", "function": "Summarizer.compress", "line_start": 15, "line_end": 58, "role": "Summarizes older messages into a concise paragraph using a fast LLM call when history exceeds context window." },
+        { "file": "openclaw/memory/conversation_store.py", "function": "ConversationStore.append", "line_start": 115, "line_end": 140, "role": "Persists a new turn to the store, updating turn counter and last-active timestamp." }
+      ],
+      "third_party_deps": ["aiosqlite", "anthropic"],
+      "env_vars": ["OPENCLAW_MEMORY_MAX_TURNS", "OPENCLAW_MEMORY_DB_PATH"],
+      "explanation": "Conversation memory uses a sliding-window strategy backed by SQLite. get_context() calls _load_history() to fetch recent turns. If token count exceeds the budget, Summarizer.compress() sends older turns to a fast LLM to produce a summary. After the agent responds, append() persists both user and assistant turns for cross-session continuity.",
+      "candidate_files": ["openclaw/memory/conversation_store.py", "openclaw/memory/summarizer.py", "openclaw/memory/models.py"],
+      "graph_edges": [
+        ["openclaw/memory/conversation_store.py:ConversationStore.get_context", "openclaw/memory/conversation_store.py:ConversationStore._load_history"],
+        ["openclaw/memory/conversation_store.py:ConversationStore.get_context", "openclaw/memory/summarizer.py:Summarizer.compress"],
+        ["openclaw/memory/conversation_store.py:ConversationStore.append", "openclaw/memory/conversation_store.py:ConversationStore._load_history"]
+      ]
+    }
+  }
+}
