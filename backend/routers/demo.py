@@ -38,14 +38,23 @@ async def get_repo(slug: str) -> dict:
 
 @router.get("/repos/{slug}/download")
 async def download_repo(slug: str):
-    """Download the full analysis JSON as a file attachment."""
-    filepath = DATA_DIR / f"{slug}.json"
-    if not filepath.exists():
-        raise HTTPException(status_code=404, detail=f"Repository '{slug}' not found in demo library.")
-
+    """Download the bundle zip (preferred) or analysis JSON as a file attachment."""
     from fastapi.responses import FileResponse
+
+    zip_path = DATA_DIR / f"{slug}.zip"
+    if zip_path.exists():
+        return FileResponse(
+            path=str(zip_path),
+            media_type="application/zip",
+            filename=f"{slug}_analysis.zip",
+            headers={"Content-Disposition": f'attachment; filename="{slug}_analysis.zip"'},
+        )
+
+    json_path = DATA_DIR / f"{slug}.json"
+    if not json_path.exists():
+        raise HTTPException(status_code=404, detail=f"Repository '{slug}' not found in demo library.")
     return FileResponse(
-        path=str(filepath),
+        path=str(json_path),
         media_type="application/json",
         filename=f"{slug}_analysis.json",
         headers={"Content-Disposition": f'attachment; filename="{slug}_analysis.json"'},

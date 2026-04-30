@@ -22,7 +22,7 @@ export default function BundlesPage({ apiBase, onNavigate }) {
     fetchBundles();
   }, [apiBase]);
 
-  async function handleDownload(slug, name) {
+  async function handleDownload(slug) {
     setDownloading(slug);
     try {
       const response = await fetch(`${apiBase}/api/demo/repos/${slug}/download`);
@@ -31,7 +31,7 @@ export default function BundlesPage({ apiBase, onNavigate }) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${slug}_analysis.json`;
+      a.download = `${slug}_analysis.zip`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -79,7 +79,7 @@ export default function BundlesPage({ apiBase, onNavigate }) {
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-on-surface-variant">
             Pre-computed deep-dive analyses of specific architectural patterns. Each bundle contains
-            features, call chains, dependency graphs, and AI explanations. Download the JSON or
+            features, call chains, dependency graphs, and AI explanations. Download the bundle or
             explore interactively.
           </p>
 
@@ -193,7 +193,7 @@ export default function BundlesPage({ apiBase, onNavigate }) {
                         View Analysis
                       </button>
                       <button
-                        onClick={() => handleDownload(bundle.slug, bundle.name)}
+                        onClick={() => handleDownload(bundle.slug)}
                         disabled={downloading === bundle.slug}
                         className="btn-primary flex-1 text-xs"
                         type="button"
@@ -207,7 +207,7 @@ export default function BundlesPage({ apiBase, onNavigate }) {
                         ) : (
                           <>
                             <span className="material-symbols-outlined text-sm">download</span>
-                            Download JSON
+                            Download ZIP
                           </>
                         )}
                       </button>
