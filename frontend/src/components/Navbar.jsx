@@ -40,11 +40,10 @@ export default function Navbar({ currentRoute, onNavigate }) {
               <button
                 key={link.hash}
                 onClick={() => onNavigate(link.hash)}
-                className={`px-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-200 ${
-                  isActive
+                className={`px-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-200 ${isActive
                     ? "text-primary-container"
                     : "text-outline hover:text-on-surface"
-                }`}
+                  }`}
                 type="button"
                 id={`nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}
               >
@@ -55,7 +54,7 @@ export default function Navbar({ currentRoute, onNavigate }) {
 
           {/* GitHub */}
           <a
-            href="https://github.com/psf/requests"
+            href="https://github.com/melvinthoompunkal/Graft"
             target="_blank"
             rel="noopener noreferrer"
             className="ml-2 flex h-9 w-9 items-center justify-center border border-outline-variant/20 text-outline transition-all hover:border-primary-container/30 hover:text-on-surface"
